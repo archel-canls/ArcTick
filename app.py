@@ -1,118 +1,107 @@
 import streamlit as st
 import pandas as pd
-import random
 from datetime import datetime
 
 # ==============================================================================
-# 1. PREMIUM BRANDING & ADVANCED CSS (RESPONSIVE WHITE-BLUE THEME)
+# 1. KONFIGURASI HALAMAN & CSS CUSTOM (TEMA PUTIH-BIRU, RESPONSIF, ELEGAN)
 # ==============================================================================
-st.set_page_config(page_title="ArcTick | Enterprise Ticketing Management", page_icon="🎫", layout="wide")
+st.set_page_config(page_title="ArcTick - Multi-Ticketing System", page_icon="🎫", layout="wide")
 
 st.markdown("""
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
-    
-    /* Reset & Base Typography */
-    html, body, [data-testid="stAppViewContainer"], [data-testid="stHeader"] {
-        background-color: #FFFFFF !important;
-        color: #0A2540 !important;
-        font-family: 'Plus Jakarta Sans', sans-serif !important;
+    /* Global Base */
+    html, body, [data-testid="stAppViewContainer"] {
+        background-color: #FFFFFF;
+        color: #1E293B;
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
     }
     
-    /* Clean Header Blueprint */
-    header[data-testid="stHeader"] {
-        background-color: #0A2540 !important;
-        border-bottom: 2px solid #635BFF;
-    }
-    
-    /* Navigation Sidebar */
+    /* Sidebar styling */
     [data-testid="stSidebar"] {
         background-color: #F8FAFC !important;
-        border-right: 1px solid #E2E8F0 !important;
+        border-right: 1px solid #E2E8F0;
     }
     
-    /* Corporate Typography Design */
-    .brand-title {
-        font-size: 34px;
-        font-weight: 800;
-        color: #0A2540;
-        letter-spacing: -0.03em;
-        line-height: 1.2;
+    /* Typography & Titles */
+    .main-title { 
+        font-size: clamp(28px, 4vw, 42px); 
+        font-weight: 800; 
+        color: #1E40AF; 
+        text-align: center; 
+        margin-bottom: 8px;
+        letter-spacing: -0.05em;
     }
-    .brand-subtitle {
-        font-size: 15px;
-        color: #627D98;
-        margin-bottom: 30px;
+    .sub-title { 
+        font-size: clamp(14px, 1.5vw, 18px); 
+        color: #64748B; 
+        text-align: center; 
+        margin-bottom: 35px; 
     }
     
-    /* Cards Layout Architecture */
-    .saas-card {
-        background: #FFFFFF;
+    /* Card layout components (Responsive Containers) */
+    .ticket-card {
+        background-color: #FFFFFF;
         border: 1px solid #E2E8F0;
-        border-radius: 16px;
-        padding: 24px;
-        margin-bottom: 20px;
-        box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.02), 0px 12px 32px rgba(0, 0, 0, 0.03);
-        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        padding: 20px;
+        border-radius: 12px;
+        margin-bottom: 16px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        transition: transform 0.2s, box-shadow 0.2s;
     }
-    .saas-card:hover {
-        border-color: #635BFF;
+    .ticket-card:hover {
         transform: translateY(-2px);
-        box-shadow: 0px 4px 8px rgba(99, 91, 255, 0.04), 0px 16px 40px rgba(99, 91, 255, 0.08);
+        box-shadow: 0 4px 6px -1px rgba(30, 64, 175, 0.1);
+        border-color: #BFDBFE;
     }
     
-    /* Custom Modern Dynamic Chat Bubbles */
-    .bubble-assistant {
-        background-color: #F1F5F9;
-        color: #0A2540;
-        padding: 14px 18px;
-        border-radius: 4px 16px 16px 16px;
-        margin-bottom: 12px;
-        line-height: 1.5;
-        border-left: 3px solid #635BFF;
-    }
-    .bubble-user {
-        background-color: #635BFF;
+    /* Custom Bot Layout Containers */
+    .bot-header {
+        background-color: #1E40AF;
         color: #FFFFFF;
-        padding: 14px 18px;
-        border-radius: 16px 16px 4px 16px;
-        margin-bottom: 12px;
-        line-height: 1.5;
-        text-align: right;
+        padding: 15px 20px;
+        border-radius: 12px 12px 0 0;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 10px;
     }
-    
-    /* Standardized Buttons to Match SaaS Framework */
+    .bot-body {
+        background-color: #F8FAFC;
+        border: 1px solid #E2E8F0;
+        border-top: none;
+        padding: 20px;
+        border-radius: 0 0 12px 12px;
+        margin-bottom: 20px;
+    }
+
+    /* Buttons override */
     .stButton>button {
-        background-color: #635BFF !important;
-        color: #FFFFFF !important;
-        border-radius: 10px !important;
+        background-color: #2563EB !important;
+        color: white !important;
+        border-radius: 8px !important;
         border: none !important;
-        font-weight: 600 !important;
-        font-size: 14px !important;
-        padding: 10px 22px !important;
-        transition: all 0.2s ease !important;
+        font-weight: 500 !important;
+        padding: 8px 16px !important;
+        transition: background-color 0.2s !important;
     }
     .stButton>button:hover {
-        background-color: #4B44E0 !important;
-        transform: translateY(-1px);
+        background-color: #1D4ED8 !important;
+        box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2) !important;
     }
     
-    /* Responsive Navigation Wrapper */
-    .menu-container {
-        background: #F1F5F9;
-        padding: 6px;
-        border-radius: 12px;
-        margin-bottom: 25px;
+    /* Form Inputs styling alignment */
+    div[data-baseweb="input"] {
+        border-radius: 8px !important;
     }
 </style>
 """, unsafe_allow_html=True)
 
 # ==============================================================================
-# 2. SEED DATA & STATE ENGINE INITIALIZATION
+# 2. INISIALISASI DATABASE SIMULASI (SESSION STATE)
 # ==============================================================================
 if 'initialized' not in st.session_state:
     st.session_state.users = {
-        "admin": {"password": "admin123", "name": "System Administrator", "role": "admin"},
+        "admin": {"password": "admin123", "name": "Chief Admin", "role": "admin"},
         "user": {"password": "user123", "name": "Archel", "role": "user"}
     }
     
@@ -123,35 +112,51 @@ if 'initialized' not in st.session_state:
             {"id": "P03", "kategori": "Ekonomi", "nama": "Citilink QG-142 (JKT - JOG)", "harga": 700000, "stok": 60},
             {"id": "P04", "kategori": "Bisnis", "nama": "Batik Air ID-6572 (JKT - MES)", "harga": 2500000, "stok": 20},
             {"id": "P05", "kategori": "Bisnis", "nama": "Garuda Indonesia GA-312 (JKT - SUB)", "harga": 3400000, "stok": 15},
+            {"id": "P06", "kategori": "Bisnis", "nama": "Singapore Airlines SQ-939 (JKT - SIN)", "harga": 5500000, "stok": 12},
+            {"id": "P07", "kategori": "First Class", "nama": "Garuda Indonesia GA-100 (JKT - LHR)", "harga": 15000000, "stok": 4},
+            {"id": "P08", "kategori": "First Class", "nama": "Emirates EK-357 (JKT - DXB)", "harga": 22000000, "stok": 6},
+            {"id": "P09", "kategori": "First Class", "nama": "Qatar Airways QR-955 (JKT - DOH)", "harga": 19500000, "stok": 5},
         ],
         "Kereta Api": [
             {"id": "K01", "kategori": "Ekonomi", "nama": "Airlangga 236 (PSE - SBI)", "harga": 104000, "stok": 120},
             {"id": "K02", "kategori": "Ekonomi", "nama": "Bengawan 246 (PSE - PWS)", "harga": 74000, "stok": 100},
+            {"id": "K03", "kategori": "Ekonomi", "nama": "Serayu 252 (GMR - PWT)", "harga": 67000, "stok": 90},
+            {"id": "K04", "kategori": "Bisnis", "nama": "Senja Utama Yk 140 (GMR - YK)", "harga": 280000, "stok": 40},
+            {"id": "K05", "kategori": "Bisnis", "nama": "Sawunggalih 154 (PSE - KTA)", "harga": 260000, "stok": 50},
+            {"id": "K06", "kategori": "Bisnis", "nama": "Gajahwong 138 (PSE - LPN)", "harga": 290000, "stok": 45},
             {"id": "K07", "kategori": "Eksekutif", "nama": "Argo Bromo Anggrek 2 (GMR - SBI)", "harga": 650000, "stok": 30},
             {"id": "K08", "kategori": "Eksekutif", "nama": "Argo Lawu 8 (GMR - SLO)", "harga": 580000, "stok": 25},
+            {"id": "K09", "kategori": "Eksekutif", "nama": "Taksaka 68 (GMR - YK)", "harga": 550000, "stok": 35},
         ],
         "Wisata": [
             {"id": "W01", "kategori": "Lokal", "nama": "Tiket Masuk Candi Borobudur", "harga": 50000, "stok": 1000},
             {"id": "W02", "kategori": "Lokal", "nama": "Tiket Masuk Dufan Ancol", "harga": 275000, "stok": 500},
-            {"id": "W07", "kategori": "VIP", "nama": "VIP Fast Track Dufan Pass", "harga": 650000, "stok": 50},
+            {"id": "W03", "kategori": "Lokal", "nama": "Tiket Ragunan Zoo Jakarta", "harga": 4000, "stok": 2000},
+            {"id": "W04", "kategori": "Mancanegara", "nama": "Universal Studios Singapore", "harga": 950000, "stok": 200},
+            {"id": "W05", "kategori": "Mancanegara", "nama": "Disneyland Tokyo", "harga": 1100000, "stok": 150},
+            {"id": "W06", "kategori": "Mancanegara", "nama": "Louvre Museum Paris", "harga": 380000, "stok": 300},
+            {"id": "W07", "kategori": "Premium / VIP", "nama": "VIP Fast Track Dufan Pass", "harga": 650000, "stok": 50},
+            {"id": "W08", "kategori": "Premium / VIP", "nama": "Bali Safari Marine Park Rhino Package", "harga": 1750000, "stok": 20},
+            {"id": "W09", "kategori": "Premium / VIP", "nama": "Lombok Private Island Cruise Tour", "harga": 3200000, "stok": 15},
         ]
     }
     st.session_state.history_transaksi = []
     st.session_state.current_user = None
-    st.session_state.applied_promo = None
-    st.session_state.vouchers = {"PROMOHEBAT": 50000, "ARCHELTIK": 100000}
     st.session_state.initialized = True
 
 if 'cart' not in st.session_state:
     st.session_state.cart = []
 
 # ==============================================================================
-# 3. ADVANCED NLP SIMULATION ENGINE (VARIED RESPONSES LIKE GEMINI)
+# 3. ENGINE TEORI BAHASA & OTOMATA (FSA + LEVENSHTEIN ANTI-TYPO)
 # ==============================================================================
 def levenshtein_distance(s1, s2):
     s1, s2 = s1.lower(), s2.lower()
-    if len(s1) < len(s2): return levenshtein_distance(s2, s1)
-    if len(s2) == 0: return len(s1)
+    if len(s1) < len(s2):
+        return levenshtein_distance(s2, s1)
+    if len(s2) == 0:
+        return len(s1)
+    
     previous_row = range(len(s2) + 1)
     for i, c1 in enumerate(s1):
         current_row = [i + 1]
@@ -172,28 +177,22 @@ def perbaiki_input(user_input, daftar_pilihan, threshold=3):
         if jarak < min_jarak:
             min_jarak = jarak
             terbaik = pilihan
-    if min_jarak <= threshold: return terbaik
+    if min_jarak <= threshold:
+        return terbaik
     return None
 
-class ArcBotGenerativeFSA:
+class ArcBotFSA:
     def __init__(self):
         self.state = "START"
         self.selected_jenis = None
         self.selected_kategori = None
         self.selected_tiket = None
-        self.response = "Halo! Saya ArcBot. Silakan sebutkan jenis tiket yang ingin Anda cari saat ini: **Pesawat**, **Kereta Api**, atau **Wisata**."
+        self.response = "Halo! Selamat datang di **ArcTick**. Saya **ArcBot** 🤖.\n\nSilakan ketik tipe perjalanan atau liburan yang Anda inginkan:\n- **Pesawat**\n- **Kereta Api**\n- **Wisata**"
 
     def step(self, user_input=None):
-        if not user_input: return
-        
-        # Kumpulan respons variatif gaya LLM / Gemini agar tidak monoton
-        rancu_responses = [
-            "Saya kurang menangkap maksud Anda. Bisa sebutkan kategori spesifik seperti Pesawat, Kereta Api, atau Wisata?",
-            "Hmm, instruksi tersebut agak kurang jelas bagi saya. Apakah Anda sedang mencari tiket Pesawat, Kereta Api, atau destinasi Wisata?",
-            "Maaf, saya belum memahami kalimat itu. Coba ketik pilihan layanan yang tersedia: Pesawat, Kereta Api, atau Wisata agar saya bisa membantu.",
-            "Bisa dipermudah pertanyaannya? Saya dikonfigurasi untuk membantu pemesanan tiket Pesawat, Kereta Api, dan Wisata."
-        ]
-        
+        if not user_input:
+            return
+
         if self.state == "START":
             pilihan_jenis = ["pesawat", "kereta api", "wisata"]
             cocok = perbaiki_input(user_input, pilihan_jenis)
@@ -203,15 +202,9 @@ class ArcBotGenerativeFSA:
                 self.state = "PILIH_KATEGORI"
                 kategori_list = list(set([t['kategori'] for t in st.session_state.tickets[self.selected_jenis]]))
                 kat_str = ", ".join([f"**{k}**" for k in kategori_list])
-                
-                success_responses = [
-                    f"Baik, pencarian diarahkan ke armada **{self.selected_jenis}**. Untuk mempermudah, kelas/kategori apa yang Anda inginkan? Tersedia kelas: {kat_str}.",
-                    f"Siap! Mari kita lihat opsi untuk **{self.selected_jenis}**. Kategori yang bisa Anda pilih saat ini adalah: {kat_str}. Mana rute yang Anda minati?",
-                    f"Membuka portal reservasi **{self.selected_jenis}**. Silakan tentukan tingkatan kelas berikut: {kat_str}."
-                ]
-                self.response = random.choice(success_responses)
+                self.response = f"Mencari armada **{self.selected_jenis}**? Pilihan kelas/kategori yang tersedia:\n{kat_str}\n\nSilakan ketik nama kategori pilihan Anda."
             else:
-                self.response = random.choice(rancu_responses)
+                self.response = "Maaf, ArcBot belum mengenali tipe tiket tersebut. Silakan ketik salah satu pilihan berikut: **Pesawat**, **Kereta Api**, atau **Wisata**."
 
         elif self.state == "PILIH_KATEGORI":
             kategori_list = list(set([t['kategori'] for t in st.session_state.tickets[self.selected_jenis]]))
@@ -224,15 +217,10 @@ class ArcBotGenerativeFSA:
                 self.state = "PILIH_ITEM"
                 items = [t for t in st.session_state.tickets[self.selected_jenis] if t['kategori'] == self.selected_kategori]
                 item_str = "\n".join([f"- **{t['id']}**: {t['nama']} (Rp {t['harga']:,})" for t in items])
-                
-                kat_success = [
-                    f"Menampilkan seluruh opsi aktif pada kategori **{self.selected_kategori}**:\n\n{item_str}\n\nMasukkan salah satu **Kode ID** di atas untuk langsung mengunci pilihan.",
-                    f"Berikut opsi manifes jadwal untuk kelas **{self.selected_kategori}**:\n\n{item_str}\n\nTuliskan **Kode Tiket** yang ingin Anda ambil.",
-                ]
-                self.response = random.choice(kat_success)
+                self.response = f"Berikut daftar jadwal / opsi tiket **{self.selected_jenis}** [{self.selected_kategori}] yang siap dipesan:\n\n{item_str}\n\nSilakan masukkan **Kode ID Tiket** (Contoh: P01, K04, W02) untuk memilih item."
             else:
                 kat_str = ", ".join([f"**{k}**" for k in kategori_list])
-                self.response = f"Pilihan kelas tidak sesuai. Harap masukkan opsi yang valid berikut ini: {kat_str}"
+                self.response = f"Kategori tidak sesuai. Silakan ketik ulang kategori yang valid berikut ini: {kat_str}"
 
         elif self.state == "PILIH_ITEM":
             items = [t for t in st.session_state.tickets[self.selected_jenis] if t['kategori'] == self.selected_kategori]
@@ -243,9 +231,9 @@ class ArcBotGenerativeFSA:
                 idx = id_list.index(user_input_clean)
                 self.selected_tiket = items[idx]
                 self.state = "KONFIRMASI"
-                self.response = f"Berikut ringkasan pesanan Anda:\n\n**{self.selected_tiket['nama']}**\nTarif: *Rp {self.selected_tiket['harga']:,}*\n\nKetik **Beli** jika rincian sudah sesuai, atau ketik **Batal** untuk mereset."
+                self.response = f"Konfirmasi Pemilihan:\n**{self.selected_tiket['nama']}**\nHarga: **Rp {self.selected_tiket['harga']:,}**\n\nKetik **Beli** untuk menambahkan ke keranjang, atau ketik **Batal** untuk membatalkan."
             else:
-                self.response = "Kode ID Tiket yang Anda ketik tidak ditemukan dalam daftar terlampir. Coba periksa kembali kombinasinya."
+                self.response = "Kode ID Tiket tidak terdaftar di daftar atas. Mohon periksa kembali kodenya dan ketik dengan benar."
 
         elif self.state == "KONFIRMASI":
             cocok = perbaiki_input(user_input, ["beli", "batal"])
@@ -257,315 +245,292 @@ class ArcBotGenerativeFSA:
                         "harga": self.selected_tiket['harga'],
                         "qty": 1
                     })
-                    self.response = f"🎉 Berhasil! **{self.selected_tiket['nama']}** telah ditambahkan ke keranjang belanja.\n\nAda rencana perjalanan lain? Sila ketik **Pesawat**, **Kereta Api**, atau **Wisata** kembali."
+                    self.response = f"🎉 Sukses! **{self.selected_tiket['nama']}** berhasil ditambahkan ke keranjang belanja Anda.\n\nIngin memesan lagi? Silakan ketik pilihan baru Anda: **Pesawat**, **Kereta Api**, atau **Wisata**."
                 else:
-                    self.response = "Mohon maaf, kuota alokasi kursi untuk tiket ini mendadak habis. Silakan ketik **Batal** untuk mereset pencarian."
+                    self.response = "Waduh, stok alokasi tiket baru saja habis. Silakan ketik **Batal** untuk mencari rute atau alternatif lainnya."
                 self.state = "START"
             elif cocok == "batal":
                 self.state = "START"
-                self.response = "Proses registrasi tiket dibatalkan. Mari kita mulai pencarian dari awal kembali. Ketik **Pesawat**, **Kereta Api**, atau **Wisata**."
+                self.response = "Proses pemilihan dibatalkan oleh pengguna. Mari kita mulai lagi. Silakan ketik tipe tiket: **Pesawat**, **Kereta Api**, atau **Wisata**."
             else:
-                self.response = "Instruksi tidak sah. Harap ketik **Beli** untuk validasi masuk keranjang atau **Batal** untuk membuang entitas."
+                self.response = "Mohon berikan jawaban yang pasti. Ketik **Beli** untuk setuju atau **Batal** untuk membatalkan item ini."
 
 if 'arcbot' not in st.session_state:
-    st.session_state.arcbot = ArcBotGenerativeFSA()
+    st.session_state.arcbot = ArcBotFSA()
     st.session_state.chat_history = [{"role": "assistant", "content": st.session_state.arcbot.response}]
 
 # ==============================================================================
-# 4. RESPONSIVE BURGER MENU DETECTOR (SMARTPHONE WRAPPER)
-# ==============================================================================
-is_mobile = st.columns([1, 4, 1])[1] # Mock responsivitas kolom tengah
-
-# ==============================================================================
-# 5. AUTHENTICATION HUB (CLEAN CORPORATE LOOK - NO AI ICONS)
+# 4. SISTEM INTERFACE & ROUTING HALAMAN
 # ==============================================================================
 if st.session_state.current_user is None:
-    st.markdown("<div style='text-align:center; padding: 40px 0 10px 0;'><span class='brand-title'>ArcTick Terminal</span></div>", unsafe_allow_html=True)
-    st.markdown("<div style='text-align:center;'><p class='brand-subtitle'>Integrated Logistics & Ticket Management Network System</p></div>", unsafe_allow_html=True)
+    st.markdown("<div class='main-title'>🎫 ArcTick Hub</div>", unsafe_allow_html=True)
+    st.markdown("<div class='sub-title'>Platform Reservasi Multi-Tiket Cerdas & Responsif</div>", unsafe_allow_html=True)
     
-    col_layout = st.columns([1.2, 1, 1.2])
-    with col_layout[1]:
-        # Gambar Interaktif dari Unsplash Link CDN menggantikan icon buatan AI standar
-        st.image("https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&fit=crop&q=80&w=600", use_container_width=True)
+    col_auth_center = st.columns([1, 2, 1])
+    with col_auth_center[1]:
+        auth_tab = st.tabs(["🔒 Masuk Akun", "📝 Registrasi Baru"])
         
-        tab_portal = st.tabs(["Sign In Platform", "Create Enterprise Account"])
-        with tab_portal[0]:
-            u_entry = st.text_input("User Core Identification", placeholder="Username")
-            p_entry = st.text_input("Security Core Key", type="password", placeholder="Password")
-            if st.button("Authorize Access", use_container_width=True):
-                if u_entry in st.session_state.users and st.session_state.users[u_entry]["password"] == p_entry:
-                    st.session_state.current_user = u_entry
+        with auth_tab[0]:
+            login_user = st.text_input("Username", key="login_u")
+            login_pass = st.text_input("Password", type="password", key="login_p")
+            if st.button("Masuk Aplikasi"):
+                if login_user in st.session_state.users and st.session_state.users[login_user]["password"] == login_pass:
+                    st.session_state.current_user = login_user
+                    st.success(f"Selamat datang kembali, {st.session_state.users[login_user]['name']}!")
                     st.rerun()
                 else:
-                    st.error("Authentication Failure: Invalid Key Access.")
-        with tab_portal[1]:
-            reg_u = st.text_input("Register New ID", placeholder="Ex: archel99")
-            reg_n = st.text_input("Legal Full Name", placeholder="Ex: Archel")
-            reg_p = st.text_input("Configure Secure Password", type="password", placeholder="Minimal 6 Character")
-            if st.button("Deploy Account Data", use_container_width=True):
-                if reg_u in st.session_state.users:
-                    st.error("Identity Duplicate: ID already recorded.")
-                elif not reg_u or not reg_p:
-                    st.error("Submission Halted: Required fields cannot empty.")
+                    st.error("Identitas login tidak cocok!")
+                    
+        with auth_tab[1]:
+            reg_user = st.text_input("Buat Username", key="reg_u")
+            reg_name = st.text_input("Nama Lengkap Terdisplay", key="reg_n")
+            reg_pass = st.text_input("Buat Password", type="password", key="reg_p")
+            if st.button("Selesaikan Pendaftaran"):
+                if reg_user in st.session_state.users:
+                    st.error("Username ini sudah diklaim pengguna lain!")
+                elif not reg_user or not reg_pass or not reg_name:
+                    st.error("Mohon isi seluruh baris kolom registrasi!")
                 else:
-                    st.session_state.users[reg_u] = {"password": reg_p, "name": reg_n, "role": "user"}
-                    st.success("Provisioning Successful! Switch to Sign In portal.")
+                    st.session_state.users[reg_user] = {"password": reg_pass, "name": reg_name, "role": "user"}
+                    st.success("Akun terdaftar! Silakan beralih ke tab Masuk Akun.")
 
-# ==============================================================================
-# 6. MAIN ENTERPRISE DESKTOP & BURGER MOBILE ENGINE
-# ==============================================================================
 else:
     user_info = st.session_state.users[st.session_state.current_user]
     
-    # Pendeteksian Menu Hamburger / Dropdown Responsif di Smartphone
-    st.markdown("<div class='menu-container'>", unsafe_allow_html=True)
+    # Sidebar Responsive Navigation
+    st.sidebar.markdown(f"<div style='padding: 10px 0;'><h4>👤 {user_info['name']}</h4><p style='color:#64748B; font-size:13px;'>Sesi: {user_info['role'].upper()}</p></div>", unsafe_allow_html=True)
+    st.sidebar.markdown("---")
+    
     if user_info["role"] == "admin":
-        list_nav = ["Dashboard Analitik", "Manajemen Tiket", "Log Transaksi Pengguna", "Pengaturan Profil"]
+        menu = st.sidebar.radio("Panel Navigasi", ["Dashboard Analitik", "Manajemen Tiket", "Log Transaksi Pengguna", "Pengaturan Profil"])
     else:
-        list_nav = ["Katalog Inventori Tiket", "Asisten Interaktif ArcBot", "Manajemen Keranjang Belanja", "Arsip Riwayat Pemesanan", "Pengaturan Profil"]
+        menu = st.sidebar.radio("Panel Navigasi", ["Katalog Tiket", "Asisten ArcBot 🤖", "Keranjang Belanja", "Riwayat Pemesanan", "Pengaturan Profil"])
         
-    # Element Dropdown Burger Menu (Dipasang di area atas agar responsif saat dibuka di Android/iOS)
-    chosen_menu = st.selectbox("☰ Navigation Menu (Responsive Hub)", list_nav)
-    st.markdown("</div>", unsafe_allow_html=True)
-
-    # Sidebar Data Metadata Tetap Berjalan di Monitor Besar
-    with st.sidebar:
-        st.markdown(f"### Core Node: {user_info['name']}")
-        st.markdown(f"Access Priority Level: `{user_info['role'].upper()}`")
-        st.markdown("---")
-        if st.button("Terminate Session", use_container_width=True):
-            st.session_state.current_user = None
-            st.rerun()
+    st.sidebar.markdown("---")
+    if st.sidebar.button("🚪 Log Out / Keluar"):
+        st.session_state.current_user = None
+        st.rerun()
 
     # ==============================================================================
-    # 7. PILIHAN DASHBOARD USER WORKFLOW
+    # 5. HALAMAN PELANGGAN (USER INTERFACE)
     # ==============================================================================
-    if chosen_menu == "Katalog Inventori Tiket":
-        st.markdown("<span class='brand-title'>Katalog Alokasi Tiket</span>", unsafe_allow_html=True)
-        st.markdown("<p class='brand-subtitle'>Manajemen pemesanan tiket terintegrasi real-time database server</p>", unsafe_allow_html=True)
+    if menu == "Katalog Tiket":
+        st.markdown("<div class='main-title'>Katalog Tiket</div>", unsafe_allow_html=True)
+        st.markdown("<div class='sub-title'>Temukan tiket perjalanan terbaik dengan harga transparan</div>", unsafe_allow_html=True)
         
-        tab_sektor = st.tabs(["Sektor Hub Udara", "Sektor Jalur Darat", "Paket Destinasi Wisata"])
-        mapping_sektor = ["Pesawat", "Kereta Api", "Wisata"]
+        jenis_tab = st.tabs(["✈️ Penerbangan", "🚊 Kereta Api", "🏞️ Destinasi Wisata"])
         
-        for idx, sek in enumerate(mapping_sektor):
-            with tab_sektor[idx]:
-                uniko = list(set([t['kategori'] for t in st.session_state.tickets[sek]]))
-                for kat_item in uniko:
-                    st.markdown(f"<div style='color:#635BFF; font-weight:700; border-bottom:1px solid #F1F5F9; padding-bottom:4px; margin-top:20px;'>KELAS - {kat_item.upper()}</div>", unsafe_allow_html=True)
-                    items_db = [t for t in st.session_state.tickets[sek] if t['kategori'] == kat_item]
+        for idx, jenis in enumerate(["Pesawat", "Kereta Api", "Wisata"]):
+            with jenis_tab[idx]:
+                kategori_list = list(set([t['kategori'] for t in st.session_state.tickets[jenis]]))
+                for kat in kategori_list:
+                    st.markdown(f"<h4 style='color:#1E40AF; margin-top:15px;'>Kelas / Zona: {kat}</h4>", unsafe_allow_html=True)
+                    items = [t for t in st.session_state.tickets[jenis] if t['kategori'] == kat]
                     
-                    grid_cols = st.columns(2)
-                    for loop_i, item_obj in enumerate(items_db):
-                        with grid_cols[loop_i % 2]:
+                    # Responsiveness using dynamic grid mapping
+                    cols = st.columns(3)
+                    for i, item in enumerate(items):
+                        with cols[i % 3]:
                             st.markdown(f"""
-                            <div class="saas-card">
-                                <div style="display:flex; justify-content:between; align-items:center;">
-                                    <span style="font-size:12px; font-weight:700; color:#635BFF; letter-spacing:1px;">ID: {item_obj['id']}</span>
-                                </div>
-                                <h4 style="margin:8px 0; font-weight:700; color:#0A2540;">{item_obj['nama']}</h4>
-                                <h3 style="margin:0; color:#0A2540; font-weight:800;">Rp {item_obj['harga']:,}</h3>
-                                <p style="font-size:13px; color:#627D98; margin-top:5px; margin-bottom:15px;">Ketersediaan Seat: <b>{item_obj['stok']}</b> unit</p>
+                            <div class="ticket-card">
+                                <span style="background-color:#DBEAFE; color:#1E40AF; font-size:11px; padding:3px 8px; border-radius:5px; font-weight:bold;">{item['id']}</span>
+                                <h5 style="margin: 10px 0 5px 0; font-weight:600;">{item['nama']}</h5>
+                                <p style="color:#2563EB; font-weight:700; font-size:20px; margin:5px 0;">Rp {item['harga']:,}</p>
+                                <p style="font-size:12px; color:#64748B; margin-bottom:15px;">Alokasi Sisa Kursi: <b>{item['stok']}</b></p>
                             </div>
                             """, unsafe_allow_html=True)
-                            if st.button("Alokasikan ke Keranjang", key=f"kat_{item_obj['id']}", use_container_width=True):
-                                if item_obj['stok'] > 0:
-                                    st.session_state.cart.append({"id": item_obj['id'], "nama": item_obj['nama'], "harga": item_obj['harga'], "qty": 1})
-                                    st.toast(f"Berhasil ditambahkan: {item_obj['nama']}")
+                            if st.button("Pesan Tiket Ini", key=f"btn_katalog_{item['id']}"):
+                                if item['stok'] > 0:
+                                    st.session_state.cart.append({"id": item['id'], "nama": item['nama'], "harga": item['harga'], "qty": 1})
+                                    st.toast(f"Berhasil ditambahkan ke keranjang: {item['nama']}")
                                 else:
-                                    st.error("Stok barang habis.")
+                                    st.error("Mohon maaf, tiket rute ini telah penuh!")
 
-    elif chosen_menu == "Asisten Interaktif ArcBot":
-        st.markdown("<span class='brand-title'>Core AI ArcBot Gateway</span>", unsafe_allow_html=True)
-        st.markdown("<p class='brand-subtitle'>Percakapan natural berbasis FSA Generatif dengan toleransi kesalahan ketik</p>", unsafe_allow_html=True)
+    elif menu == "Asisten ArcBot 🤖":
+        st.markdown("<div class='main-title'>Asisten Cerdas ArcBot</div>", unsafe_allow_html=True)
+        st.markdown("<div class='sub-title'>Konsultasikan dan pesan tiket otomatis bebas dari kesalahan pengetikan</div>", unsafe_allow_html=True)
         
-        chat_layout_left, chat_layout_right = st.columns([2.5, 1])
+        col_chat, col_status = st.columns([2, 1])
         
-        with chat_layout_right:
-            st.markdown("<div class='saas-card'>", unsafe_allow_html=True)
-            st.markdown("<h5>Context State Tracker</h5>", unsafe_allow_html=True)
-            st.write(f"**Sektor Dituju:** {st.session_state.arcbot.selected_jenis or 'None'}")
-            st.write(f"**Kategori Dipilih:** {st.session_state.arcbot.selected_kategori or 'None'}")
-            if st.button("Wipe Chat Memory", use_container_width=True):
-                st.session_state.arcbot = ArcBotGenerativeFSA()
+        with col_status:
+            # Tampilan Status Alur Obrolan yang Terbuka dan Bersih tanpa penulisan State Mesin Teknis internal
+            st.markdown("""
+            <div class='bot-header'>
+                <span>📈 Alur Percakapan Terpandu</span>
+            </div>
+            """, unsafe_allow_html=True)
+            with st.container():
+                st.markdown(f"""
+                <div class='bot-body'>
+                    <p style='margin-bottom:8px;'><b>Kategori Sektor Aktif:</b><br><span style='color:#2563EB;'>{st.session_state.arcbot.selected_jenis or 'Menunggu pilihan...'}</span></p>
+                    <p style='margin-bottom:0;'><b>Kelas Perjalanan Aktif:</b><br><span style='color:#2563EB;'>{st.session_state.arcbot.selected_kategori or 'Menunggu pilihan...'}</span></p>
+                </div>
+                """, unsafe_allow_html=True)
+                
+            if st.button("Segarkan Ulang Percakapan"):
+                st.session_state.arcbot = ArcBotFSA()
                 st.session_state.chat_history = [{"role": "assistant", "content": st.session_state.arcbot.response}]
                 st.rerun()
-            st.markdown("</div>", unsafe_allow_html=True)
-            
-        with chat_layout_left:
-            for chit in st.session_state.chat_history:
-                if chit["role"] == "assistant":
-                    st.markdown(f"<div class='bubble-assistant'>{chit['content']}</div>", unsafe_allow_html=True)
-                else:
-                    st.markdown(f"<div class='bubble-user'>{chit['content']}</div>", unsafe_allow_html=True)
-                    
-            if inp_chat := st.chat_input("Ketik pesan balasan Anda ke ArcBot..."):
-                st.session_state.chat_history.append({"role": "user", "content": inp_chat})
-                st.session_state.arcbot.step(inp_chat)
+                
+        with col_chat:
+            chat_container = st.container(height=450)
+            with chat_container:
+                for msg in st.session_state.chat_history:
+                    with st.chat_message(msg["role"]):
+                        st.markdown(msg["content"])
+                        
+            if prompt := st.chat_input("Ketik instruksi pemesanan Anda di sini (misal: pswat, kreta)..."):
+                st.session_state.chat_history.append({"role": "user", "content": prompt})
+                st.session_state.arcbot.step(prompt)
                 st.session_state.chat_history.append({"role": "assistant", "content": st.session_state.arcbot.response})
                 st.rerun()
 
-    elif chosen_menu == "Manajemen Keranjang Belanja":
-        st.markdown("<span class='brand-title'>Billing System & Checkout</span>", unsafe_allow_html=True)
-        st.markdown("<p class='brand-subtitle'>Kelola rekapitulasi data pembelian dan masukkan kode voucher diskon</p>", unsafe_allow_html=True)
+    elif menu == "Keranjang Belanja":
+        st.markdown("<div class='main-title'>Keranjang Belanja</div>", unsafe_allow_html=True)
+        st.markdown("<div class='sub-title'>Periksa kembali tiket pesanan Anda sebelum melakukan konfirmasi pembayaran</div>", unsafe_allow_html=True)
         
         if not st.session_state.cart:
-            st.info("Sistem mendeteksi keranjang belanja Anda masih kosong.")
+            st.info("Keranjang Anda saat ini kosong. Pilih tiket rute terbaik di Katalog atau melalui ArcBot!")
         else:
-            df_rekap = pd.DataFrame(st.session_state.cart)
-            st.dataframe(df_rekap, use_container_width=True, hide_index=True)
+            df_cart = pd.DataFrame(st.session_state.cart)
+            st.dataframe(df_cart, use_container_width=True, hide_index=True)
             
-            subtotal = sum([x['harga'] * x['qty'] for x in st.session_state.cart])
+            total_bayar = sum([x['harga'] * x['qty'] for x in st.session_state.cart])
+            st.markdown(f"<h3 style='text-align:right; color:#1E40AF;'>Total Pembayaran: Rp {total_bayar:,}</h3>", unsafe_allow_html=True)
             
-            # Fitur Baru: Sistem Kode Voucher Promo Terintegrasi
-            col_v1, col_v2 = st.columns([2, 1])
-            with col_v1:
-                v_code = st.text_input("Mempunyai Voucher Diskon? Masukkan di sini:", placeholder="Contoh: PROMOHEBAT")
-            with col_v2:
-                st.markdown("<br>", unsafe_allow_html=True)
-                if st.button("Terapkan Diskon", use_container_width=True):
-                    if v_code in st.session_state.vouchers:
-                        st.session_state.applied_promo = st.session_state.vouchers[v_code]
-                        st.success(f"Potongan Harga Rp {st.session_state.vouchers[v_code]:,} berhasil diterapkan!")
-                    else:
-                        st.error("Kode voucher tidak valid.")
-                        
-            diskon = st.session_state.applied_promo if st.session_state.applied_promo else 0
-            total_akhir = max(0, subtotal - diskon)
-            
-            st.markdown(f"<h4>Subtotal: Rp {subtotal:,}</h4>", unsafe_allow_html=True)
-            st.markdown(f"<h4 style='color:red;'>Potongan Voucher: - Rp {diskon:,}</h4>", unsafe_allow_html=True)
-            st.markdown(f"<h2 style='color:#635BFF;'>Total Akhir Tagihan: Rp {total_akhir:,}</h2>", unsafe_allow_html=True)
-            
-            # Fitur Baru: Dropdown Pemilihan Metode Pembayaran Resmi
-            pay_method = st.selectbox("Pilih Metode Settlement Pembayaran:", ["Mandiri Virtual Account", "BCA Virtual Account", "QRIS LinkAja/Dana", "Credit Card Secured"])
-            
-            c_action1, c_action2 = st.columns(2)
-            with c_action1:
-                if st.button("Kosongkan Semua Item", use_container_width=True):
+            col_actions = st.columns([1, 1])
+            with col_actions[0]:
+                if st.button("Kosongkan Isi Keranjang"):
                     st.session_state.cart = []
-                    st.session_state.applied_promo = None
                     st.rerun()
-            with c_action2:
-                if st.button("Konfirmasi Pembayaran Finansial", use_container_width=True):
-                    for item_c in st.session_state.cart:
-                        for k_key in st.session_state.tickets:
-                            for item_t in st.session_state.tickets[k_key]:
-                                if item_t['id'] == item_c['id']:
-                                    item_t['stok'] -= 1
+            with col_actions[1]:
+                if st.button("Konfirmasi & Bayar Sekarang"):
+                    for c_item in st.session_state.cart:
+                        for j_key in st.session_state.tickets:
+                            for t_item in st.session_state.tickets[j_key]:
+                                if t_item['id'] == c_item['id']:
+                                    t_item['stok'] -= 1
                                     
                     st.session_state.history_transaksi.append({
-                        "id_transaksi": f"TX-{random.randint(10000, 99999)}",
-                        "customer": st.session_state.current_user,
-                        "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-                        "rincian": ", ".join([f"{x['nama']} (x{x['qty']})" for x in st.session_state.cart]),
-                        "metode": pay_method,
-                        "nominal": total_akhir
+                        "Pelanggan": st.session_state.current_user,
+                        "Waktu Transaksi": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                        "Rincian Tiket": ", ".join([f"{x['nama']} (x{x['qty']})" for x in st.session_state.cart]),
+                        "Total Biaya": total_bayar
                     })
                     st.session_state.cart = []
-                    st.session_state.applied_promo = None
-                    st.success("Transaksi Diterima! Faktur Pemesanan Elektronik Anda telah diterbitkan.")
+                    st.success("🎉 Reservasi Berhasil! E-Tiket resmi Anda telah diterbitkan. Silakan cek menu Riwayat.")
 
-    elif chosen_menu == "Arsip Riwayat Pemesanan":
-        st.markdown("<span class='brand-title'>Arsip Pemesanan Resmi</span>", unsafe_allow_html=True)
-        st.markdown("<p class='brand-subtitle'>Lembar riwayat pencatatan dokumen perjalanan dan status cetak manifes</p>", unsafe_allow_html=True)
+    elif menu == "Riwayat Pemesanan":
+        st.markdown("<div class='main-title'>Riwayat Pemesanan</div>", unsafe_allow_html=True)
+        st.markdown("<div class='sub-title'>Daftar berkas invoice dokumen digital perjalanan Anda</div>", unsafe_allow_html=True)
         
-        filter_trx = [x for x in st.session_state.history_transaksi if x['customer'] == st.session_state.current_user]
-        if not filter_trx:
-            st.info("Sistem belum menemukan adanya transaksi keluar atas nama user Anda.")
+        user_trx = [x for x in st.session_state.history_transaksi if x['Pelanggan'] == st.session_state.current_user]
+        if not user_trx:
+            st.info("Belum ditemukan riwayat pemesanan atas nama akun Anda.")
         else:
-            for trx in filter_trx:
-                with st.container():
-                    st.markdown(f"""
-                    <div class='saas-card'>
-                        <div style='display:flex; justify-content:space-between;'>
-                            <b style='color:#635BFF;'>{trx['id_transaksi']}</b>
-                            <span style='color:#627D98; font-size:12px;'>{trx['timestamp']}</span>
-                        </div>
-                        <p style='margin:10px 0;'>Detail Item: {trx['rincian']}</p>
-                        <p style='margin:0; font-size:13px;'>Metode: {trx['metode']} | <b>Total: Rp {trx['nominal']:,}</b></p>
-                    </div>
-                    """, unsafe_allow_html=True)
-                    # Fitur Baru: Tombol Cetak Nota Mockup Elektronik
-                    if st.button("Cetak Digital Dokumen PDF", key=f"print_{trx['id_transaksi']}"):
-                        st.toast(f"Mengekspor berkas {trx['id_transaksi']}... Unduhan Berhasil!")
+            st.dataframe(pd.DataFrame(user_trx), use_container_width=True, hide_index=True)
 
     # ==============================================================================
-    # 8. PANEL KONTROL ADMIN WORKFLOW (MANAJEMEN TIKET TANPA SEBUTAN CRUD)
+    # 6. PANEL KONTROL MANAJEMEN SISTEM (ADMIN INTERFACE)
     # ==============================================================================
-    elif chosen_menu == "Dashboard Analitik" and user_info["role"] == "admin":
-        st.markdown("<span class='brand-title'>Corporate Data Analytics</span>", unsafe_allow_html=True)
+    elif menu == "Dashboard Analitik" and user_info["role"] == "admin":
+        st.markdown("<div class='main-title'>Dashboard Analitik</div>", unsafe_allow_html=True)
+        st.markdown("<div class='sub-title'>Ringkasan grafik operasional server utama ArcTick</div>", unsafe_allow_html=True)
         
-        ca, cb, cc = st.columns(3)
-        with ca: st.metric("Total User Terdaftar", f"{len(st.session_state.users)} Akun")
-        with cb: st.metric("Total Jenis Rute Komoditas", f"{sum([len(st.session_state.tickets[k]) for k in st.session_state.tickets])} Rute")
-        with cc: st.metric("Gross Revenue (Pendapatan)", f"Rp {sum([x['nominal'] for x in st.session_state.history_transaksi]):,}")
+        c1, c2, c3 = st.columns(3)
+        tot_user = len(st.session_state.users)
+        tot_item = sum([len(st.session_state.tickets[k]) for k in st.session_state.tickets])
+        tot_omset = sum([x['Total Biaya'] for x in st.session_state.history_transaksi])
+        
+        with c1:
+            st.metric("Pengguna Terdaftar", f"{tot_user} Akun")
+        with c2:
+            st.metric("Varian Rute Sektor", f"{tot_item} Rute")
+        with c3:
+            st.metric("Omset Penjualan", f"Rp {tot_omset:,}")
 
-    elif chosen_menu == "Manajemen Tiket" and user_info["role"] == "admin":
-        st.markdown("<span class='brand-title'>Modul Manajemen Konfigurasi Tiket</span>", unsafe_allow_html=True)
-        st.markdown("<p class='brand-subtitle'>Panel kontrol mutasi restrukturisasi data, stok gudang, dan penyesuaian kelas tarif</p>", unsafe_allow_html=True)
+    elif menu == "Manajemen Tiket" and user_info["role"] == "admin":
+        st.markdown("<div class='main-title'>Manajemen Tiket</div>", unsafe_allow_html=True)
+        st.markdown("<div class='sub-title'>Panel terpusat pengelola persediaan, modifikasi rute, dan katalog entitas tiket</div>", unsafe_allow_html=True)
         
-        action_selector = st.radio("Pilih Tipe Aksi Operasional:", ["Lihat Database", "Entri Data Baru", "Modifikasi Parameter Data", "Eliminasi Tiket"], horizontal=True)
-        sektor_target = st.selectbox("Pilih Sektor Industri:", ["Pesawat", "Kereta Api", "Wisata"])
+        opsi_aksi = st.radio("Pilih Opsi Pengelolaan Data", ["Lihat Seluruh Tiket", "Tambahkan Tiket Baru", "Perbarui Rincian Tiket", "Hapus Tiket Eksisting"], horizontal=True)
+        jenis_pilih = st.selectbox("Pilih Jenis Komoditas Perjalanan", ["Pesawat", "Kereta Api", "Wisata"])
         
-        if action_selector == "Lihat Database":
-            st.dataframe(pd.DataFrame(st.session_state.tickets[sektor_target]), use_container_width=True, hide_index=True)
+        if opsi_aksi == "Lihat Seluruh Tiket":
+            df_view = pd.DataFrame(st.session_state.tickets[jenis_pilih])
+            st.dataframe(df_view, use_container_width=True, hide_index=True)
             
-        elif action_selector == "Entri Data Baru":
-            new_id = st.text_input("Kode ID Unik Baru")
-            new_kat = st.text_input("Kategori Kelas")
-            new_nama = st.text_input("Nama Jadwal/Armada Lengkap")
-            new_harga = st.number_input("Besaran Tarif Unit (Rupiah)", min_value=0, step=50000)
-            new_stok = st.number_input("Batas Maksimal Kuota Kursi", min_value=0, step=5)
+        elif opsi_aksi == "Tambahkan Tiket Baru":
+            st.subheader(f"Input Formulir Baru - Sektor {jenis_pilih}")
+            c_id = st.text_input("Kode Unik Tiket Baru (Contoh: P10 / K10 / W10)")
+            c_kat = st.text_input("Nama Kategori / Kelas")
+            c_nama = st.text_input("Nama Rute / Armada / Lokasi Wisata Lengkap")
+            c_harga = st.number_input("Besaran Tarif Nilai Rupiah", min_value=0, step=10000)
+            c_stok = st.number_input("Kuantitas Batas Maksimal Kuota Stok", min_value=0, step=1)
             
-            if st.button("Simpan Entri Baru"):
-                st.session_state.tickets[sektor_target].append({
-                    "id": new_id, "kategori": new_kat, "nama": new_nama, "harga": new_harga, "stok": new_stok
-                })
-                st.success("Informasi tiket baru telah berhasil diunggah ke database awan.")
+            if st.button("Simpan Data ke Database"):
+                if c_id and c_kat and c_nama:
+                    st.session_state.tickets[jenis_pilih].append({
+                        "id": c_id, "kategori": c_kat, "nama": c_nama, "harga": c_harga, "stok": c_stok
+                    })
+                    st.success("Sukses menyimpan pembaruan entitas baru ke sistem utama.")
+                else:
+                    st.error("Gagal! Semua kolom wajib terisi.")
                 
-        elif action_selector == "Modifikasi Parameter Data":
-            arr_id = [x['id'] for x in st.session_state.tickets[sektor_target]]
-            id_chosen = st.selectbox("Pilih Kode ID Target yang Diubah", arr_id)
+        elif opsi_aksi == "Perbarui Rincian Tiket":
+            st.subheader(f"Formulir Penyesuaian Data - Sektor {jenis_pilih}")
+            list_id = [t['id'] for t in st.session_state.tickets[jenis_pilih]]
+            select_id = st.selectbox("Pilih Kode ID Tiket Target", list_id)
             
-            ref_pointer = next(x for x in st.session_state.tickets[sektor_target] if x['id'] == id_chosen)
-            edit_kat = st.text_input("Sesuaikan Kategori", value=ref_pointer['kategori'])
-            edit_nama = st.text_input("Sesuaikan Nama Objek", value=ref_pointer['nama'])
-            edit_harga = st.number_input("Sesuaikan Nilai Tarif Jual", min_value=0, value=ref_pointer['harga'])
-            edit_stok = st.number_input("Sesuaikan Batas Stok Sisa", min_value=0, value=ref_pointer['stok'])
+            item_ref = next(t for t in st.session_state.tickets[jenis_pilih] if t['id'] == select_id)
+            u_kat = st.text_input("Sesuaikan Kategori Kelas", value=item_ref['kategori'])
+            u_nama = st.text_input("Sesuaikan Nama Armada / Lokasi Wisata", value=item_ref['nama'])
+            u_harga = st.number_input("Sesuaikan Harga Jual Terbaru", min_value=0, value=item_ref['harga'], step=10000)
+            u_stok = st.number_input("Sesuaikan Total Alokasi Ketersediaan Kursi", min_value=0, value=item_ref['stok'], step=1)
             
-            if st.button("Terapkan Konfigurasi Baru"):
-                ref_pointer['kategori'] = edit_kat
-                ref_pointer['nama'] = edit_nama
-                ref_pointer['harga'] = edit_harga
-                ref_pointer['stok'] = edit_stok
-                st.success("Sinkronisasi Pembaruan Data Sukses Dilakukan.")
+            if st.button("Terapkan Perubahan Rincian"):
+                item_ref['kategori'] = u_kat
+                item_ref['nama'] = u_nama
+                item_ref['harga'] = u_harga
+                item_ref['stok'] = u_stok
+                st.success(f"Pembaruan data rute ID {select_id} sukses disimpan!")
 
-        elif action_selector == "Eliminasi Tiket":
-            arr_id = [x['id'] for x in st.session_state.tickets[sektor_target]]
-            id_chosen = st.selectbox("Pilih ID Tiket yang Akan Dihapus", arr_id)
-            if st.button("Hapus Secara Permanen"):
-                st.session_state.tickets[sektor_target] = [x for x in st.session_state.tickets[sektor_target] if x['id'] != id_chosen]
-                st.warning("Data terpilih telah dibersihkan secara permanen dari server.")
+        elif opsi_aksi == "Hapus Tiket Eksisting":
+            st.subheader(f"Penghapusan Data dari Sistem Inventori - Sektor {jenis_pilih}")
+            list_id = [t['id'] for t in st.session_state.tickets[jenis_pilih]]
+            select_id = st.selectbox("Pilih ID Tiket yang akan dieliminasi permanen", list_id)
+            
+            if st.button("Eksekusi Hapus Permanen"):
+                st.session_state.tickets[jenis_pilih] = [t for t in st.session_state.tickets[jenis_pilih] if t['id'] != select_id]
+                st.warning(f"Data berkas tiket dengan ID {select_id} resmi dihilangkan dari katalog.")
 
-    elif chosen_menu == "Log Transaksi Pengguna" and user_info["role"] == "admin":
-        st.markdown("<span class='brand-title'>Audit Log Sistem Finansial</span>", unsafe_allow_html=True)
+    elif menu == "Log Transaksi Pengguna" and user_info["role"] == "admin":
+        st.markdown("<div class='main-title'>Log Transaksi Global</div>", unsafe_allow_html=True)
+        st.markdown("<div class='sub-title'>Audit riwayat pembayaran transaksi yang dilakukan seluruh pengguna aplikasi</div>", unsafe_allow_html=True)
+        
         if not st.session_state.history_transaksi:
-            st.info("Belum ada mutasi log transaksi terdeteksi masuk.")
+            st.info("Arsip transaksi kosong. Belum ada aktivitas transaksi masuk dari pelanggan.")
         else:
             st.dataframe(pd.DataFrame(st.session_state.history_transaksi), use_container_width=True, hide_index=True)
 
     # ==============================================================================
-    # 9. PENGATURAN PROFIL INTEGRATED HUB
+    # 7. MANAJEMEN PENGATURAN PROFIL GLOBAL (USER & ADMIN)
     # ==============================================================================
-    elif chosen_menu == "Pengaturan Profil":
-        st.markdown("<span class='brand-title'>Account Settings Portal</span>", unsafe_allow_html=True)
+    elif menu == "Pengaturan Profil":
+        st.markdown("<div class='main-title'>Pengaturan Profil</div>", unsafe_allow_html=True)
+        st.markdown("<div class='sub-title'>Kelola preferensi dan rahasia kredensial akun personal Anda</div>", unsafe_allow_html=True)
         
-        curr_u = st.session_state.current_user
-        edit_display_name = st.text_input("Ubah Nama Resmi Akun", value=st.session_state.users[curr_u]['name'])
-        edit_display_pass = st.text_input("Ubah Kunci Pengaman Baru", value=st.session_state.users[curr_u]['password'], type="password")
+        curr_username = st.session_state.current_user
         
-        if st.button("Perbarui Data Autentikasi"):
-            if edit_display_name and edit_display_pass:
-                st.session_state.users[curr_u]['name'] = edit_display_name
-                st.session_state.users[curr_u]['password'] = edit_display_pass
-                st.success("Modifikasi data kredensial profil Anda berhasil diproses.")
+        col_prof_center = st.columns([1, 2, 1])
+        with col_prof_center[1]:
+            new_name = st.text_input("Ubah Nama Tampilan Akun", value=st.session_state.users[curr_username]['name'])
+            new_pass = st.text_input("Ubah Password Baru Anda", value=st.session_state.users[curr_username]['password'], type="password")
+            
+            if st.button("Simpan Perubahan Akun"):
+                if new_name and new_pass:
+                    st.session_state.users[curr_username]['name'] = new_name
+                    st.session_state.users[curr_username]['password'] = new_pass
+                    st.success("Profil akun Anda berhasil dimodifikasi dan telah diperbarui secara langsung!")
+                else:
+                    st.error("Pengisian kolom nama dan password tidak boleh dikosongkan.")
