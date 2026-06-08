@@ -263,7 +263,7 @@ class ArcBotGenerativeFSA:
                 self.state = "START"
             elif cocok == "batal":
                 self.state = "START"
-                self.response = "Proses registrasi tiket dibatalkan. Mari kita mulai pencarian dari awal kembali. Ketik **Pesawat**, **Kereta Api**, atau **Wisata**."
+                self.response = "Proses registrasi tiket dibatalkan. Mari kita mulai pencarian dari awal kembali. Ketik Pesawat, Kereta Api, atau Wisata."
             else:
                 self.response = "Instruksi tidak sah. Harap ketik **Beli** untuk validasi masuk keranjang atau **Batal** untuk membuang entitas."
 
