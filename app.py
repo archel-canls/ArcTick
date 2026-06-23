@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import random
+import re
 from datetime import datetime
 
 # ==============================================================================
@@ -116,38 +117,159 @@ if 'initialized' not in st.session_state:
         "user": {"password": "user123", "name": "Archel", "role": "user"}
     }
     
+# ==============================================================================
+# INITIALIZATION: DATA TICKETS DENGAN DATA JADWAL (RUTE, TANGGAL, JAM) REALISTIS
+# ==============================================================================
+if 'tickets' not in st.session_state:
     st.session_state.tickets = {
         "Pesawat": [
-            {"id": "P01", "kategori": "Ekonomi", "nama": "Garuda Indonesia GA-204 (JKT - SUB)", "harga": 1200000, "stok": 50},
-            {"id": "P02", "kategori": "Ekonomi", "nama": "Lion Air JT-512 (JKT - DPS)", "harga": 850000, "stok": 80},
-            {"id": "P03", "kategori": "Ekonomi", "nama": "Citilink QG-142 (JKT - JOG)", "harga": 700000, "stok": 60},
-            {"id": "P04", "kategori": "Bisnis", "nama": "Batik Air ID-6572 (JKT - MES)", "harga": 2500000, "stok": 20},
-            {"id": "P05", "kategori": "Bisnis", "nama": "Garuda Indonesia GA-312 (JKT - SUB)", "harga": 3400000, "stok": 15},
+            {
+                "id": "P01", 
+                "kategori": "Ekonomi", 
+                "nama": "Garuda Indonesia GA-204 (JKT - SUB)", 
+                "asal": "JKT", "tujuan": "SUB",
+                "harga": 1200000, 
+                "stok": 50, 
+                "fasilitas": "Bagasi 20kg, Makanan Hidangan Hangat, WiFi Terbatas",
+                "image": "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?auto=format&fit=crop&q=80&w=600",
+                "jadwal": ["25-06-2026 08:00", "26-06-2026 14:00", "27-06-2026 19:30"]
+            },
+            {
+                "id": "P02", 
+                "kategori": "Ekonomi", 
+                "nama": "Lion Air JT-512 (JKT - DPS)", 
+                "asal": "JKT", "tujuan": "DPS",
+                "harga": 850000, 
+                "stok": 80, 
+                "fasilitas": "Bagasi Kabin 7kg (Bagasi Bagasi berbayar)",
+                "image": "https://images.unsplash.com/photo-1540962351504-03099e0a754b?auto=format&fit=crop&q=80&w=600",
+                "jadwal": ["25-06-2026 06:00", "26-06-2026 11:15"]
+            },
+            {
+                "id": "P03", 
+                "kategori": "Ekonomi", 
+                "nama": "Citilink QG-142 (JKT - JOG)", 
+                "asal": "JKT", "tujuan": "JOG",
+                "harga": 700000, 
+                "stok": 60, 
+                "fasilitas": "Free Snack Box, Bagasi Terdaftar 10kg",
+                "image": "https://images.unsplash.com/photo-1483450388369-9ed95738483c?auto=format&fit=crop&q=80&w=600",
+                "jadwal": ["25-06-2026 09:45", "28-06-2026 16:20"]
+            },
+            {
+                "id": "P04", 
+                "kategori": "Bisnis", 
+                "nama": "Batik Air ID-6572 (JKT - MES)", 
+                "asal": "JKT", "tujuan": "MES",
+                "harga": 2500000, 
+                "stok": 20, 
+                "fasilitas": "Kursi Kulit Lebar, Bagasi 30kg, Makanan Premium",
+                "image": "https://images.unsplash.com/photo-1517479149777-5f3b1511d5ad?auto=format&fit=crop&q=80&w=600",
+                "jadwal": ["26-06-2026 07:00", "27-06-2026 13:00"]
+            },
+            {
+                "id": "P05", 
+                "kategori": "Bisnis", 
+                "nama": "Garuda Indonesia GA-312 (JKT - SUB)", 
+                "asal": "JKT", "tujuan": "SUB",
+                "harga": 3400000, 
+                "stok": 15, 
+                "fasilitas": "In-flight Entertainment 4K, WiFi Unlimited, Bagasi 40kg, Akses Lounge Bandara",
+                "image": "https://images.unsplash.com/photo-1606761568499-6d2451b23c66?auto=format&fit=crop&q=80&w=600",
+                "jadwal": ["25-06-2026 10:00", "27-06-2026 17:15"]
+            },
         ],
         "Kereta Api": [
-            {"id": "K01", "kategori": "Ekonomi", "nama": "Airlangga 236 (PSE - SBI)", "harga": 104000, "stok": 120},
-            {"id": "K02", "kategori": "Ekonomi", "nama": "Bengawan 246 (PSE - PWS)", "harga": 74000, "stok": 100},
-            {"id": "K07", "kategori": "Eksekutif", "nama": "Argo Bromo Anggrek 2 (GMR - SBI)", "harga": 650000, "stok": 30},
-            {"id": "K08", "kategori": "Eksekutif", "nama": "Argo Lawu 8 (GMR - SLO)", "harga": 580000, "stok": 25},
+            {
+                "id": "K01", 
+                "kategori": "Ekonomi", 
+                "nama": "Airlangga 236 (PSE - SBI)", 
+                "asal": "PSE", "tujuan": "SBI",
+                "harga": 104000, 
+                "stok": 120, 
+                "fasilitas": "AC Split, Power Outlet/Charger per bangku, Toilet Bersih",
+                "image": "https://images.unsplash.com/photo-1474487548417-781cb71495f3?auto=format&fit=crop&q=80&w=600",
+                "jadwal": ["25-06-2026 11:10", "26-06-2026 11:10", "27-06-2026 11:10"]
+            },
+            {
+                "id": "K02", 
+                "kategori": "Ekonomi", 
+                "nama": "Bengawan 246 (PSE - PWS)", 
+                "asal": "PSE", "tujuan": "PWS",
+                "harga": 74000, 
+                "stok": 100, 
+                "fasilitas": "AC, Charger, Formasi Kursi 3-2 berhadapan",
+                "image": "https://images.unsplash.com/photo-1515165504669-423042d330d6?auto=format&fit=crop&q=80&w=600",
+                "jadwal": ["25-06-2026 06:20", "26-06-2026 06:20"]
+            },
+            {
+                "id": "K07", 
+                "kategori": "Eksekutif", 
+                "nama": "Argo Bromo Anggrek 2 (GMR - SBI)", 
+                "asal": "GMR", "tujuan": "SBI",
+                "harga": 650000, 
+                "stok": 30, 
+                "fasilitas": "Kursi Reclining & Rotating, Selimut & Bantal, Makan Gratis, WiFi",
+                "image": "https://images.unsplash.com/photo-1532103054090-334e6e60b73c?auto=format&fit=crop&q=80&w=600",
+                "jadwal": ["25-06-2026 08:15", "26-06-2026 20:30"]
+            },
+            {
+                "id": "K08", 
+                "kategori": "Eksekutif", 
+                "nama": "Argo Lawu 8 (GMR - SLO)", 
+                "asal": "GMR", "tujuan": "SLO",
+                "harga": 580000, 
+                "stok": 25, 
+                "fasilitas": "Kursi Reclining, Port Audio, AC Sentral Dingin, Layanan Restorasi ke Meja",
+                "image": "https://images.unsplash.com/photo-1519626144233-7ff521bf83cd?auto=format&fit=crop&q=80&w=600",
+                "jadwal": ["25-06-2026 22:15", "27-06-2026 22:15"]
+            },
         ],
         "Wisata": [
-            {"id": "W01", "kategori": "Lokal", "nama": "Tiket Masuk Candi Borobudur", "harga": 50000, "stok": 1000},
-            {"id": "W02", "kategori": "Lokal", "nama": "Tiket Masuk Dufan Ancol", "harga": 275000, "stok": 500},
-            {"id": "W07", "kategori": "VIP", "nama": "VIP Fast Track Dufan Pass", "harga": 650000, "stok": 50},
+            {
+                "id": "W01", 
+                "kategori": "Lokal", 
+                "nama": "Tiket Masuk Candi Borobudur", 
+                "asal": "SEMUA", "tujuan": "BOROBUDUR",
+                "harga": 50000, 
+                "stok": 1000, 
+                "fasilitas": "Akses Plataran Luar Candi, Pemandu Audio Digital (QR)",
+                "image": "https://images.unsplash.com/photo-1584810359583-96fc3448beaa?auto=format&fit=crop&q=80&w=600",
+                "jadwal": ["25-06-2026 07:00", "26-06-2026 07:00", "27-06-2026 07:00"]
+            },
+            {
+                "id": "W02", 
+                "kategori": "Lokal", 
+                "nama": "Tiket Masuk Dufan Ancol", 
+                "asal": "SEMUA", "tujuan": "DUFAN",
+                "harga": 275000, 
+                "stok": 500, 
+                "fasilitas": "Akses Reguler ke Semua Wahana (Antrean Normal)",
+                "image": "https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&q=80&w=600",
+                "jadwal": ["25-06-2026 10:00", "26-06-2026 10:00", "27-06-2026 10:00"]
+            },
+            {
+                "id": "W07", 
+                "kategori": "VIP", 
+                "nama": "VIP Fast Track Dufan Pass", 
+                "asal": "SEMUA", "tujuan": "DUFAN",
+                "harga": 650000, 
+                "stok": 50, 
+                "fasilitas": "Jalur Bebas Antrean (Fast Track) di 12 Wahana Utama, Akses Lounge Ber-AC",
+                "image": "https://images.unsplash.com/photo-1561662091-aef40e041dcd?auto=format&fit=crop&q=80&w=600",
+                "jadwal": ["25-06-2026 10:00", "26-06-2026 10:00"]
+            },
         ]
     }
-    st.session_state.history_transaksi = []
-    st.session_state.current_user = None
-    st.session_state.applied_promo = None
-    st.session_state.vouchers = {"PROMOHEBAT": 50000, "ARCHELTIK": 100000}
-    st.session_state.initialized = True
 
-if 'cart' not in st.session_state:
-    st.session_state.cart = []
+if 'history_transaksi' not in st.session_state: st.session_state.history_transaksi = []
+if 'current_user' not in st.session_state: st.session_state.current_user = None
+if 'applied_promo' not in st.session_state: st.session_state.applied_promo = None
+if 'vouchers' not in st.session_state: st.session_state.vouchers = {"PROMOHEBAT": 50000, "ARCHELTIK": 100000}
+if 'chat_history' not in st.session_state: st.session_state.chat_history = []
+if 'cart' not in st.session_state: st.session_state.cart = []
+st.session_state.initialized = True
 
-# ==============================================================================
-# 3. ADVANCED NLP SIMULATION ENGINE (VARIED RESPONSES LIKE GEMINI)
-# ==============================================================================
 def levenshtein_distance(s1, s2):
     s1, s2 = s1.lower(), s2.lower()
     if len(s1) < len(s2): return levenshtein_distance(s2, s1)
@@ -179,73 +301,220 @@ class ArcBotGenerativeFSA:
     def __init__(self):
         self.state = "START"
         self.selected_jenis = None
+        self.selected_asal = None
+        self.selected_tujuan = None
+        self.selected_tanggal = None 
+        self.selected_jam = None
         self.selected_kategori = None
         self.selected_tiket = None
-        self.response = "Halo! Saya ArcBot. Silakan sebutkan jenis tiket yang ingin Anda cari saat ini: **Pesawat**, **Kereta Api**, atau **Wisata**."
+        self.temp_nama = None       
+        self.temp_nik = None        
+        self.temp_kontak = None     
+        self.response = "Halo! Saya ArcBot. Silakan pilih jenis tiket yang ingin Anda cari:\n- **Pesawat**\n- **Kereta Api**\n- **Wisata**"
+
+    def dapatkan_deskripsi_kategori(self, jenis, kategori):
+        deskripsi = {
+            "Pesawat": {
+                "Ekonomi": "Kelas Ekonomis dengan harga terjangkau, konfigurasi kursi standar.",
+                "Bisnis": "Kelas Eksklusif dengan ruang kaki luas, prioritas bagasi, dan hidangan premium."
+            },
+            "Kereta Api": {
+                "Ekonomi": "Kelas Kereta dengan efisiensi biaya tinggi, dilengkapi AC dan stopkontak.",
+                "Eksekutif": "Kelas Kereta Premium dengan kursi reclining, kabin senyap, dan bantal."
+            },
+            "Wisata": {
+                "Lokal": "Tiket akses masuk standar/reguler ke area destinasi utama.",
+                "VIP": "Tiket akses premium dengan keuntungan jalur tanpa antrean (Fast Track)."
+            }
+        }
+        return deskripsi.get(jenis, {}).get(kategori, "Kategori standar untuk kenyamanan perjalanan Anda.")
+
+    def handle_global_queries(self, user_input):
+        ui = user_input.lower()
+        if "termurah" in ui:
+            kategori_target = None
+            if "pesawat" in ui: kategori_target = "Pesawat"
+            elif "kereta" in ui: kategori_target = "Kereta Api"
+            elif "wisata" in ui: kategori_target = "Wisata"
+                
+            if kategori_target:
+                armada_list = st.session_state.tickets[kategori_target]
+                murah = min(armada_list, key=lambda x: x['harga'])
+                self.selected_jenis = kategori_target
+                self.selected_kategori = murah['kategori']
+                self.selected_tiket = murah
+                self.state = "PILIH_JADWAL_TERMURAH"
+                
+                jadwal_str = ""
+                for j in murah['jadwal']:
+                    jadwal_str += f"- `{j}`\n"
+                    
+                return (
+                    f"Tiket '{kategori_target}' termurah saat ini adalah:\n"
+                    f"🎫 '{murah['nama']}' ({murah['kategori']})\n"
+                    f"Tarif: Rp {murah['harga']:,}\n"
+                    f"Fasilitas: {murah['fasilitas']}\n\n"
+                    f"Jadwal Keberangkatan yang tersedia:\n{jadwal_str}\n"
+                    f"Silakan ketik/salin salah satu Waktu di atas untuk langsung memesan:"
+                )
+        if "fasilitas" in ui:
+            for k in st.session_state.tickets:
+                for t in st.session_state.tickets[k]:
+                    if t['nama'].lower() in ui or t['id'].lower() in ui:
+                        return f"Fasilitas '{t['nama']}': {t['fasilitas']}"
+        return None
 
     def step(self, user_input=None):
         if not user_input: return
         
-        # Kumpulan respons variatif gaya LLM / Gemini agar tidak monoton
-        rancu_responses = [
-            "Saya kurang menangkap maksud Anda. Bisa sebutkan kategori spesifik seperti Pesawat, Kereta Api, atau Wisata?",
-            "Hmm, instruksi tersebut agak kurang jelas bagi saya. Apakah Anda sedang mencari tiket Pesawat, Kereta Api, atau destinasi Wisata?",
-            "Maaf, saya belum memahami kalimat itu. Coba ketik pilihan layanan yang tersedia: Pesawat, Kereta Api, atau Wisata agar saya bisa membantu.",
-            "Bisa dipermudah pertanyaannya? Saya dikonfigurasi untuk membantu pemesanan tiket Pesawat, Kereta Api, dan Wisata."
-        ]
-        
-        if self.state == "START":
-            pilihan_jenis = ["pesawat", "kereta api", "wisata"]
-            cocok = perbaiki_input(user_input, pilihan_jenis)
-            
-            if cocok:
-                self.selected_jenis = "Pesawat" if cocok == "pesawat" else "Kereta Api" if cocok == "kereta api" else "Wisata"
-                self.state = "PILIH_KATEGORI"
-                kategori_list = list(set([t['kategori'] for t in st.session_state.tickets[self.selected_jenis]]))
-                kat_str = ", ".join([f"**{k}**" for k in kategori_list])
-                
-                success_responses = [
-                    f"Baik, pencarian diarahkan ke armada **{self.selected_jenis}**. Untuk mempermudah, kelas/kategori apa yang Anda inginkan? Tersedia kelas: {kat_str}.",
-                    f"Siap! Mari kita lihat opsi untuk **{self.selected_jenis}**. Kategori yang bisa Anda pilih saat ini adalah: {kat_str}. Mana rute yang Anda minati?",
-                    f"Membuka portal reservasi **{self.selected_jenis}**. Silakan tentukan tingkatan kelas berikut: {kat_str}."
-                ]
-                self.response = random.choice(success_responses)
-            else:
-                self.response = random.choice(rancu_responses)
+        global_res = self.handle_global_queries(user_input)
+        if global_res:
+            self.response = global_res
+            return
 
-        elif self.state == "PILIH_KATEGORI":
-            kategori_list = list(set([t['kategori'] for t in st.session_state.tickets[self.selected_jenis]]))
-            kategori_lowercase = [k.lower() for k in kategori_list]
-            cocok = perbaiki_input(user_input, kategori_lowercase)
+        ui_lower = user_input.strip().lower()
+
+        # FSM LOGIC
+        if self.state == "START":
+            cocok = None
+            if "pesawat" in ui_lower or "terbang" in ui_lower: cocok = "Pesawat"
+            elif "kereta" in ui_lower or "api" in ui_lower: cocok = "Kereta Api"
+            elif "wisata" in ui_lower or "liburan" in ui_lower: cocok = "Wisata"
+            else:
+                cocok = perbaiki_input(user_input, ["pesawat", "kereta api", "wisata"])
+                if cocok:
+                    cocok = "Pesawat" if cocok == "pesawat" else "Kereta Api" if cocok == "kereta api" else "Wisata"
+
+            if cocok:
+                self.selected_jenis = cocok
+                
+                # Perbaikan Utama: Cek jika ada kecocokan rute spesifik langsung dari database ticket
+                rute_ditemukan = False
+                for t in st.session_state.tickets[self.selected_jenis]:
+                    if t['asal'].lower() in ui_lower and t['tujuan'].lower() in ui_lower:
+                        self.selected_asal = t['asal']
+                        self.selected_tujuan = t['tujuan']
+                        rute_ditemukan = True
+                        break
+
+                if rute_ditemukan:
+                    self.state = "PILIH_KATEGORI_RUTE"
+                    armada_cocok = [t for t in st.session_state.tickets[self.selected_jenis] 
+                                    if t['asal'] == self.selected_asal and t['tujuan'] == self.selected_tujuan]
+                    kat_list = list(set([t['kategori'] for t in armada_cocok]))
+                    kat_str = ", ".join([f"**{k}**" for k in kat_list])
+                    self.response = f"Rute ditemukan! Menampilkan tiket '{self.selected_jenis}' dari **{self.selected_asal}** ke **{self.selected_tujuan}**.\n\nSilakan ketik kelas kategori yang tersedia: {kat_str}"
+                else:
+                    # Masuk ke alur pemilihan kategori umum
+                    self.state = "ALUR_NORMAL_KATEGORI"
+                    kategori_list = list(set([t['kategori'] for t in st.session_state.tickets[self.selected_jenis]]))
+                    kat_str_dengan_desc = ""
+                    for k in kategori_list:
+                        desc_singkat = self.dapatkan_deskripsi_kategori(self.selected_jenis, k)
+                        kat_str_dengan_desc += f"\n- **{k}**: {desc_singkat}"
+                    self.response = f"Baik! Berikut kategori tiket '{self.selected_jenis}' yang tersedia:{kat_str_dengan_desc}\n\nSilakan ketik kategori pilihan Anda:"
+            else:
+                self.response = "Mohon maaf, pesan Anda tidak dipahami. Silakan pilih kategori: **Pesawat**, **Kereta Api**, atau **Wisata**."
+
+        elif self.state == "PILIH_KATEGORI_RUTE":
+            armada_cocok = [t for t in st.session_state.tickets[self.selected_jenis] 
+                            if t['asal'] == self.selected_asal and t['tujuan'] == self.selected_tujuan]
+            kategori_list = list(set([t['kategori'] for t in armada_cocok]))
+            kat_lower = [k.lower() for k in kategori_list]
+            cocok = perbaiki_input(user_input, kat_lower)
             
             if cocok:
-                idx = kategori_lowercase.index(cocok)
-                self.selected_kategori = kategori_list[idx]
+                self.selected_kategori = kategori_list[kat_lower.index(cocok)]
+                self.state = "PILIH_ITEM"
+                items = [t for t in armada_cocok if t['kategori'] == self.selected_kategori]
+                
+                item_str = ""
+                for t in items:
+                    item_str += f"🎫 **[{t['id']}]** {t['nama']}\n"
+                    item_str += f"  - Tarif: Rp {t['harga']:,}\n"
+                    item_str += f"  - Fasilitas: {t['fasilitas']}\n\n"
+                self.response = f"Berikut daftar tiket kelas '{self.selected_kategori}' untuk rute tersebut:\n\n{item_str}Ketik/Copy **Kode ID** tiket pilihan Anda untuk melihat jadwal resmi:"
+            else:
+                self.response = f"Pilihan salah. Silakan ketik kategori yang sesuai: {', '.join(kategori_list)}"
+
+        elif self.state == "ALUR_NORMAL_KATEGORI":
+            kategori_list = list(set([t['kategori'] for t in st.session_state.tickets[self.selected_jenis]]))
+            kat_lower = [k.lower() for k in kategori_list]
+            cocok = perbaiki_input(user_input, kat_lower)
+            
+            if cocok:
+                self.selected_kategori = kategori_list[kat_lower.index(cocok)]
                 self.state = "PILIH_ITEM"
                 items = [t for t in st.session_state.tickets[self.selected_jenis] if t['kategori'] == self.selected_kategori]
-                item_str = "\n".join([f"- **{t['id']}**: {t['nama']} (Rp {t['harga']:,})" for t in items])
                 
-                kat_success = [
-                    f"Menampilkan seluruh opsi aktif pada kategori **{self.selected_kategori}**:\n\n{item_str}\n\nMasukkan salah satu **Kode ID** di atas untuk langsung mengunci pilihan.",
-                    f"Berikut opsi manifes jadwal untuk kelas **{self.selected_kategori}**:\n\n{item_str}\n\nTuliskan **Kode Tiket** yang ingin Anda ambil.",
-                ]
-                self.response = random.choice(kat_success)
+                item_str = ""
+                for t in items:
+                    item_str += f"🎫 **[{t['id']}]** {t['nama']}\n"
+                    item_str += f"  - Tarif: Rp {t['harga']:,}\n"
+                    item_str += f"  - Fasilitas: {t['fasilitas']}\n\n"
+                self.response = f"Berikut daftar Jadwal kelas '{self.selected_kategori}' yang tersedia:\n\n{item_str}Ketik/Copy **Kode ID** tiket pilihan Anda untuk melihat jadwal resmi:"
             else:
-                kat_str = ", ".join([f"**{k}**" for k in kategori_list])
-                self.response = f"Pilihan kelas tidak sesuai. Harap masukkan opsi yang valid berikut ini: {kat_str}"
+                self.response = f"Kategori kelas tersebut tidak tersedia. Silakan ketik salah satu kelas berikut: {', '.join(kategori_list)}"
 
         elif self.state == "PILIH_ITEM":
             items = [t for t in st.session_state.tickets[self.selected_jenis] if t['kategori'] == self.selected_kategori]
             id_list = [t['id'].lower() for t in items]
-            user_input_clean = user_input.strip().lower()
             
-            if user_input_clean in id_list:
-                idx = id_list.index(user_input_clean)
-                self.selected_tiket = items[idx]
-                self.state = "KONFIRMASI"
-                self.response = f"Berikut ringkasan pesanan Anda:\n\n**{self.selected_tiket['nama']}**\nTarif: *Rp {self.selected_tiket['harga']:,}*\n\nKetik **Beli** jika rincian sudah sesuai, atau ketik **Batal** untuk mereset."
+            if ui_lower in id_list:
+                self.selected_tiket = items[id_list.index(ui_lower)]
+                self.state = "PILIH_JADWAL"
+                
+                jadwal_str = ""
+                for j in self.selected_tiket['jadwal']:
+                    jadwal_str += f"- `{j}`\n"
+                    
+                self.response = (
+                    f"Jdwal terpilih: **{self.selected_tiket['nama']}**\n"
+                    f"Fasilitas: {self.selected_tiket['fasilitas']}\n\n"
+                    f"Silakan pilih & ketik ulang Jadwal Keberangkatan di bawah ini secara presisi:\n\n"
+                    f"{jadwal_str}"
+                )
             else:
-                self.response = "Kode ID Tiket yang Anda ketik tidak ditemukan dalam daftar terlampir. Coba periksa kembali kombinasinya."
+                self.response = "Kode ID salah. Mohon ketik kembali Kode ID yang tertera pada daftar di atas (Contoh: P01)."
+        elif self.state == "PILIH_JADWAL" or self.state == "PILIH_JADWAL_TERMURAH":
+            waktu_input = user_input.strip()
+            if waktu_input in self.selected_tiket['jadwal']:
+                self.selected_tanggal, self.selected_jam = waktu_input.split(" ")
+                self.state = "INPUT_NAMA"
+                self.response = f"Jadwal diatur pada tanggal **{self.selected_tanggal}** pukul **{self.selected_jam}**.\n\nMohon masukkan Nama Lengkap Anda (sesuai KTP/Paspor):"
+            else:
+                self.response = "⚠️ Waktu yang Anda masukkan tidak terdaftar. Silakan salin kembali waktu resmi yang valid sesuai opsi di atas:"
+
+        elif self.state == "INPUT_NAMA": 
+            if len(user_input.strip()) < 3:
+                self.response = "Nama terlalu pendek. Mohon ketik kembali Nama Lengkap Anda:"
+                return
+            self.temp_nama = user_input.strip()
+            self.state = "INPUT_NIK" 
+            self.response = f"Nama penumpang '{self.temp_nama}' berhasil direkam. Selanjutnya, silakan masukkan Nomor NIK KTP / Paspor Anda:"
+
+        elif self.state == "INPUT_NIK":
+            if len(user_input.strip()) < 6:
+                self.response = "Nomor identitas terlalu pendek. Silakan ketik NIK/Paspor Anda dengan benar:"
+                return
+            self.temp_nik = user_input.strip()
+            self.state = "INPUT_KONTAK" 
+            self.response = "Identitas tervalidasi. Terakhir, ketik Nomor Telepon atau WhatsApp Anda yang aktif:"
+
+        elif self.state == "INPUT_KONTAK":
+            self.temp_kontak = user_input.strip()
+            self.state = "KONFIRMASI" 
+            self.response = (
+                f"📋 **RINGKASAN FORMULIR MANIFEST PERJALANAN**\n"
+                f"- Nama Penumpang: {self.temp_nama}\n"
+                f"- NIK / Paspor: {self.temp_nik}\n"
+                f"- Kontak: {self.temp_kontak}\n"
+                f"- Jadwal: {self.selected_tanggal} [{self.selected_jam} WIB]\n\n"
+                f"📦 **DETAIL TIKET:**\n"
+                f"[{self.selected_tiket['id']}] {self.selected_tiket['nama']} ({self.selected_kategori})\n"
+                f"Tarif Settlement: **Rp {self.selected_tiket['harga']:,}**\n\n"
+                f"Apakah data sudah sesuai? Ketik **Beli** untuk memesan atau **Batal** untuk mereset."
+            )
 
         elif self.state == "KONFIRMASI":
             cocok = perbaiki_input(user_input, ["beli", "batal"])
@@ -253,24 +522,36 @@ class ArcBotGenerativeFSA:
                 if self.selected_tiket['stok'] > 0:
                     st.session_state.cart.append({
                         "id": self.selected_tiket['id'],
-                        "nama": self.selected_tiket['nama'],
+                        "nama": f"{self.selected_tiket['nama']} [{self.selected_tanggal} {self.selected_jam}]",
+                        "user": f"{self.temp_nama} (NIK: {self.temp_nik})", 
                         "harga": self.selected_tiket['harga'],
-                        "qty": 1
+                        "qty": 1 
                     })
-                    self.response = f"🎉 Berhasil! **{self.selected_tiket['nama']}** telah ditambahkan ke keranjang belanja.\n\nAda rencana perjalanan lain? Sila ketik **Pesawat**, **Kereta Api**, atau **Wisata** kembali."
+                    self.response = f"✅ Sukses! Tiket perjalanan atas nama **{self.temp_nama}** telah berhasil masuk ke Keranjang Belanja. Apakah ada destinasi rute lain yang ingin Anda cari?"
                 else:
-                    self.response = "Mohon maaf, kuota alokasi kursi untuk tiket ini mendadak habis. Silakan ketik **Batal** untuk mereset pencarian."
-                self.state = "START"
+                    self.response = "Maaf sekali, kuota kursi pada rute jadwal ini baru saja habis terisi penuh."
+                self.reset_fsa_data()
             elif cocok == "batal":
-                self.state = "START"
-                self.response = "Proses registrasi tiket dibatalkan. Mari kita mulai pencarian dari awal kembali. Ketik Pesawat, Kereta Api, atau Wisata."
+                self.reset_fsa_data()
+                self.response = "Proses registrasi dibatalkan. Kembali ke awal, apa yang bisa saya bantu? (**Pesawat** / **Kereta Api** / **Wisata**)"
             else:
-                self.response = "Instruksi tidak sah. Harap ketik **Beli** untuk validasi masuk keranjang atau **Batal** untuk membuang entitas."
+                self.response = "Mohon konfirmasi secara jelas dengan mengetik kata **Beli** atau **Batal**."
+
+    def reset_fsa_data(self):
+        self.state = "START"
+        self.selected_jenis = None
+        self.selected_asal = None
+        self.selected_tujuan = None
+        self.selected_tanggal = None
+        self.selected_jam = None
+        self.selected_kategori = None
+        self.selected_tiket = None
+        self.temp_nama = None
+        self.temp_nik = None
+        self.temp_kontak = None
 
 if 'arcbot' not in st.session_state:
     st.session_state.arcbot = ArcBotGenerativeFSA()
-    st.session_state.chat_history = [{"role": "assistant", "content": st.session_state.arcbot.response}]
-
 # ==============================================================================
 # 4. RESPONSIVE BURGER MENU DETECTOR (SMARTPHONE WRAPPER)
 # ==============================================================================
@@ -310,39 +591,117 @@ if st.session_state.current_user is None:
                 else:
                     st.session_state.users[reg_u] = {"password": reg_p, "name": reg_n, "role": "user"}
                     st.success("Provisioning Successful! Switch to Sign In portal.")
-
 # ==============================================================================
-# 6. MAIN ENTERPRISE DESKTOP & BURGER MOBILE ENGINE
+# 6. MAIN ENTERPRISE DESKTOP & NAVIGATION HEADER (MATCHING THE IMAGE DESIGN)
 # ==============================================================================
 else:
     user_info = st.session_state.users[st.session_state.current_user]
     
-    # Pendeteksian Menu Hamburger / Dropdown Responsif di Smartphone
-    st.markdown("<div class='menu-container'>", unsafe_allow_html=True)
+    # Menentukan list menu berdasarkan role
     if user_info["role"] == "admin":
         list_nav = ["Dashboard Analitik", "Manajemen Tiket", "Log Transaksi Pengguna", "Pengaturan Profil"]
     else:
         list_nav = ["Katalog Inventori Tiket", "Asisten Interaktif ArcBot", "Manajemen Keranjang Belanja", "Arsip Riwayat Pemesanan", "Pengaturan Profil"]
-        
-    # Element Dropdown Burger Menu (Dipasang di area atas agar responsif saat dibuka di Android/iOS)
-    chosen_menu = st.selectbox("☰ Navigation Menu (Responsive Hub)", list_nav)
-    st.markdown("</div>", unsafe_allow_html=True)
+    
+    # Inisialisasi session state untuk menyimpan menu aktif jika belum ada
+    if "chosen_menu" not in st.session_state:
+        st.session_state.chosen_menu = list_nav[0]
 
-    # Sidebar Data Metadata Tetap Berjalan di Monitor Besar
-    with st.sidebar:
-        st.markdown(f"### Core Node: {user_info['name']}")
-        st.markdown(f"Access Priority Level: `{user_info['role'].upper()}`")
-        st.markdown("---")
-        if st.button("Terminate Session", use_container_width=True):
+    # --- INLINE CSS HEADER MENU (PERSIS SEPERTI GAMBAR CONTOH) ---
+    st.markdown("""
+    <style>
+    /* Styling Container Header Navigation */
+    .header-nav-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-color: #FFFFFF;
+        padding: 15px 20px;
+        border-bottom: 1px solid #E2E8F0;
+        margin-bottom: 30px;
+    }
+    .brand-logo-text {
+        font-size: 24px;
+        font-weight: 800;
+        color: #0F172A;
+    }
+    .brand-logo-text span {
+        color: #EAB308; /* Warna kuning pada teks Tick */
+    }
+    /* Menghilangkan padding bawaan Streamlit column block untuk button */
+    div[data-testid="stHorizontalBlock"] {
+        align-items: center !important;
+    }
+    </style>
+    """, unsafe_allow_html=True)
+
+    # Implementasi Grid Header Navigation menggunakan st.columns
+    # Membuat baris navigasi atas yang bersih dan rapi
+    num_menus = len(list_nav)
+    cols_header = st.columns([2] + [1.2] * num_menus + [1.5])
+    
+    # Kolom Pertama: Logo ArcTick
+    with cols_header[0]:
+        st.markdown("<div class='brand-logo-text'>Arc<span>Tick</span></div>", unsafe_allow_html=True)
+    
+    # Kolom Tengah: Menu Pilihan (Katalog, ArcBot, dll) dengan Polos / Underline Aktif
+    for idx, menu_name in enumerate(list_nav):
+        with cols_header[idx + 1]:
+            # Memberikan penanda singkat (singkatan) agar pas di grid header desktop
+            short_name = menu_name.replace("Katalog Inventori ", "").replace("Asisten Interaktif ", "").replace("Manajemen ", "").replace("Arsip ", "")
+            
+            # Deteksi apakah menu ini sedang aktif/dipilih
+            is_active = (st.session_state.chosen_menu == menu_name)
+            
+            # Format visual tombol: Jika aktif diberi mark garis bawah, jika tidak tampil polos tekstual
+            button_label = f"✨ {short_name}" if is_active else short_name
+            
+            # CSS kondisional disuntik via st.markdown tepat sebelum tombol dirender
+            if is_active:
+                st.markdown("<style>div.stButton > button { border-bottom: 3px solid #635BFF !important; color: #635BFF !important; font-weight: bold; background: none !important; border-top:none; border-left:none; border-right:none; border-radius:0px; }</style>", unsafe_allow_html=True)
+            else:
+                st.markdown("<style>div.stButton > button { border: none !important; color: #475569 !important; background: none !important; background-color: transparent !important; }</style>", unsafe_allow_html=True)
+                
+            if st.button(button_label, key=f"nav_{menu_name}", use_container_width=True):
+                st.session_state.chosen_menu = menu_name
+                st.rerun()
+                
+    # Kolom Terakhir: Logout (Dibuat mencolok dengan style background Biru Solid seperti tombol Register)
+    with cols_header[-1]:
+        st.markdown("""
+        <style>
+        /* Mengubah spesifik tombol terakhir (Logout) menjadi Biru Registrasi */
+        div[data-testid="column"]:last-child div.stButton > button {
+            background-color: #0066E2 !important;
+            color: white !important;
+            border-radius: 20px !important;
+            font-weight: 600 !important;
+            border: none !important;
+            padding: 8px 16px !important;
+        }
+        </style>
+        """, unsafe_allow_html=True)
+        if st.button("Sign Out", key="terminate_session_hub", use_container_width=True):
             st.session_state.current_user = None
+            st.session_state.chosen_menu = None
             st.rerun()
 
-    # ==============================================================================
+    # Mengembalikan nilai menu aktif ke variabel lama agar sisa kode di bawahnya tidak error
+    chosen_menu = st.session_state.chosen_menu
+
+    # Sidebar opsional (Menampilkan info User internal / Core Node)
+    with st.sidebar:
+        st.markdown(f"### Node User: {user_info['name']}")
+        st.markdown(f"Privilege: `{user_info['role'].upper()}`")
+        st.markdown("---")
+
+
+# ==============================================================================
     # 7. PILIHAN DASHBOARD USER WORKFLOW
     # ==============================================================================
     if chosen_menu == "Katalog Inventori Tiket":
-        st.markdown("<span class='brand-title'>Katalog Alokasi Tiket</span>", unsafe_allow_html=True)
-        st.markdown("<p class='brand-subtitle'>Manajemen pemesanan tiket terintegrasi real-time database server</p>", unsafe_allow_html=True)
+        st.markdown("<span class='brand-title'>Hey There, Going Anywhere?</span>", unsafe_allow_html=True)
+        st.markdown("<p class='brand-subtitle'>Pesan Tiket Dimanapun Kapanpun</p>", unsafe_allow_html=True)
         
         tab_sektor = st.tabs(["Sektor Hub Udara", "Sektor Jalur Darat", "Paket Destinasi Wisata"])
         mapping_sektor = ["Pesawat", "Kereta Api", "Wisata"]
@@ -357,16 +716,26 @@ else:
                     grid_cols = st.columns(2)
                     for loop_i, item_obj in enumerate(items_db):
                         with grid_cols[loop_i % 2]:
+                            # Container kartu luar menggunakan CSS .saas-card Anda
+                            st.markdown('<div class="saas-card" style="padding-bottom:10px; margin-bottom:0px;">', unsafe_allow_html=True)
+                            
+                            # Menampilkan Gambar dari Internet (Menggunakan parameter Native agar 100% responsif)
+                            if "image" in item_obj:
+                                st.image(item_obj["image"], use_container_width=True)
+                            
+                            # Mengisi Konten Informasi Tiket di dalam Kartu Elemen setelah gambar
                             st.markdown(f"""
-                            <div class="saas-card">
-                                <div style="display:flex; justify-content:between; align-items:center;">
+                                <div style="display:flex; justify-content:space-between; align-items:center; margin-top:10px;">
                                     <span style="font-size:12px; font-weight:700; color:#635BFF; letter-spacing:1px;">ID: {item_obj['id']}</span>
+                                    <span style="font-size:11px; background:#F1F5F9; color:#475569; padding:2px 8px; border-radius:12px;">{item_obj['fasilitas'].split(',')[0]}</span>
                                 </div>
-                                <h4 style="margin:8px 0; font-weight:700; color:#0A2540;">{item_obj['nama']}</h4>
+                                <h4 style="margin:8px 0; font-weight:700; color:#0A2540; line-height:1.4; min-height:45px;">{item_obj['nama']}</h4>
                                 <h3 style="margin:0; color:#0A2540; font-weight:800;">Rp {item_obj['harga']:,}</h3>
-                                <p style="font-size:13px; color:#627D98; margin-top:5px; margin-bottom:15px;">Ketersediaan Seat: <b>{item_obj['stok']}</b> unit</p>
+                                <p style="font-size:13px; color:#627D98; margin-top:5px; margin-bottom:10px;">Ketersediaan Seat: <b>{item_obj['stok']}</b> unit</p>
                             </div>
                             """, unsafe_allow_html=True)
+                            
+                            # Tombol Interaksi Aksi disematkan di luar wrapper raw HTML agar interaksinya tetap berjalan sempurna di Streamlit
                             if st.button("Alokasikan ke Keranjang", key=f"kat_{item_obj['id']}", use_container_width=True):
                                 if item_obj['stok'] > 0:
                                     st.session_state.cart.append({"id": item_obj['id'], "nama": item_obj['nama'], "harga": item_obj['harga'], "qty": 1})
@@ -416,7 +785,6 @@ else:
             
             subtotal = sum([x['harga'] * x['qty'] for x in st.session_state.cart])
             
-            # Fitur Baru: Sistem Kode Voucher Promo Terintegrasi
             col_v1, col_v2 = st.columns([2, 1])
             with col_v1:
                 v_code = st.text_input("Mempunyai Voucher Diskon? Masukkan di sini:", placeholder="Contoh: PROMOHEBAT")
@@ -436,7 +804,6 @@ else:
             st.markdown(f"<h4 style='color:red;'>Potongan Voucher: - Rp {diskon:,}</h4>", unsafe_allow_html=True)
             st.markdown(f"<h2 style='color:#635BFF;'>Total Akhir Tagihan: Rp {total_akhir:,}</h2>", unsafe_allow_html=True)
             
-            # Fitur Baru: Dropdown Pemilihan Metode Pembayaran Resmi
             pay_method = st.selectbox("Pilih Metode Settlement Pembayaran:", ["Mandiri Virtual Account", "BCA Virtual Account", "QRIS LinkAja/Dana", "Credit Card Secured"])
             
             c_action1, c_action2 = st.columns(2)
@@ -485,10 +852,8 @@ else:
                         <p style='margin:0; font-size:13px;'>Metode: {trx['metode']} | <b>Total: Rp {trx['nominal']:,}</b></p>
                     </div>
                     """, unsafe_allow_html=True)
-                    # Fitur Baru: Tombol Cetak Nota Mockup Elektronik
                     if st.button("Cetak Digital Dokumen PDF", key=f"print_{trx['id_transaksi']}"):
                         st.toast(f"Mengekspor berkas {trx['id_transaksi']}... Unduhan Berhasil!")
-
     # ==============================================================================
     # 8. PANEL KONTROL ADMIN WORKFLOW (MANAJEMEN TIKET TANPA SEBUTAN CRUD)
     # ==============================================================================
@@ -513,7 +878,7 @@ else:
         elif action_selector == "Entri Data Baru":
             new_id = st.text_input("Kode ID Unik Baru")
             new_kat = st.text_input("Kategori Kelas")
-            new_nama = st.text_input("Nama Jadwal/Armada Lengkap")
+            new_nama = st.text_input("Nama Jadwal Lengkap")
             new_harga = st.number_input("Besaran Tarif Unit (Rupiah)", min_value=0, step=50000)
             new_stok = st.number_input("Batas Maksimal Kuota Kursi", min_value=0, step=5)
             
