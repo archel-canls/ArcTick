@@ -175,7 +175,7 @@ if 'tickets' not in st.session_state:
                 "harga": 3400000, 
                 "stok": 15, 
                 "fasilitas": "In-flight Entertainment 4K, WiFi Unlimited, Bagasi 40kg, Akses Lounge Bandara",
-                "image": "https://images.unsplash.com/photo-1606761568499-6d2451b23c66?auto=format&fit=crop&q=80&w=600",
+                "image": "https://akcdn.detik.net.id/community/media/visual/2019/08/28/0c2f4370-c6bb-40fd-b9fd-e2d2ce7b9084.jpeg?w=700&q=90auto=format&fit=crop&q=80&w=600",
                 "jadwal": ["25-06-2026 10:00", "27-06-2026 17:15"]
             },
         ],
@@ -712,7 +712,7 @@ else:
     text-align: center;
     margin-bottom: 30px;
 }
-.brand-title {
+.brand-titles {
     font-size: 3rem;
     font-weight: 800;
     color: #FFFFFF !important;
@@ -727,7 +727,7 @@ else:
     if chosen_menu == "Katalog Inventori Tiket":
         st.markdown("""
         <div class="hero-banner">
-            <h1 class="brand-title">Hey There, Going Anywhere?</h1>
+            <h1 class="brand-titles">Hey There, Going Anywhere?</h1>
             <p class="brand-subtitle">Pesan Tiket Dimanapun Kapanpun dengan ArcTick</p>
         </div>
         """, unsafe_allow_html=True)
@@ -773,8 +773,8 @@ else:
                                     st.error("Stok barang habis.")
 
     elif chosen_menu == "Asisten Interaktif ArcBot":
-        st.markdown("<span class='brand-title'>Core AI ArcBot Gateway</span>", unsafe_allow_html=True)
-        st.markdown("<p class='brand-subtitle'>Percakapan natural berbasis FSA Generatif dengan toleransi kesalahan ketik</p>", unsafe_allow_html=True)
+        st.markdown("<span class='brand-title'>AI ArcBot Pemesananan</span>", unsafe_allow_html=True)
+        st.markdown("<p class='brand-subtitle'>Pesan Tiket mellui chat interaktif cukup ketik **pesan tiket pesawat atau tiket lainnya** </p>", unsafe_allow_html=True)
         
         chat_layout_left, chat_layout_right = st.columns([2.5, 1])
         
