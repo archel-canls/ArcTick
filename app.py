@@ -774,7 +774,7 @@ else:
 
     elif chosen_menu == "Asisten Interaktif ArcBot":
         st.markdown("<span class='brand-title'>Tanya ArcBot</span>", unsafe_allow_html=True)
-        st.markdown("<p class='brand-subtitle'>Pesan Tiket mellui chat interaktif cukup ketik **pesan tiket pesawat atau tiket lainnya** </p>", unsafe_allow_html=True)
+        st.markdown("<p class='brand-subtitle'>Pesan Tiket mellui chat interaktif cukup ketik **pesan tiket pesawat** atau tiket lainnya</p>", unsafe_allow_html=True)
         
         chat_layout_left, chat_layout_right = st.columns([2.5, 1])
         
