@@ -388,7 +388,6 @@ class ArcBotGenerativeFSA:
             if cocok:
                 self.selected_jenis = cocok
                 
-                # Perbaikan Utama: Cek jika ada kecocokan rute spesifik langsung dari database ticket
                 rute_ditemukan = False
                 for t in st.session_state.tickets[self.selected_jenis]:
                     if t['asal'].lower() in ui_lower and t['tujuan'].lower() in ui_lower:
@@ -553,12 +552,12 @@ class ArcBotGenerativeFSA:
 if 'arcbot' not in st.session_state:
     st.session_state.arcbot = ArcBotGenerativeFSA()
 # ==============================================================================
-# 4. RESPONSIVE BURGER MENU DETECTOR (SMARTPHONE WRAPPER)
+# 4. RESPONSIVE BURGER MENU DETECTOR 
 # ==============================================================================
 is_mobile = st.columns([1, 4, 1])[1] # Mock responsivitas kolom tengah
 
 # ==============================================================================
-# 5. AUTHENTICATION HUB (CLEAN CORPORATE LOOK - NO AI ICONS)
+# 5. AUTHENTICATION HUB 
 # ==============================================================================
 if st.session_state.current_user is None:
     st.markdown("<div style='text-align:center; padding: 40px 0 10px 0;'><span class='brand-title'>ArcTick Terminal</span></div>", unsafe_allow_html=True)
@@ -699,9 +698,39 @@ else:
 # ==============================================================================
     # 7. PILIHAN DASHBOARD USER WORKFLOW
     # ==============================================================================
+        st.markdown("""
+<style>
+/* CSS untuk Banner Background */
+.hero-banner {
+    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), 
+                      url('https://images.unsplash.com/photo-1436491865332-7a61a109cc05?auto=format&fit=crop&q=80&w=1600');
+    background-size: cover;
+    background-position: center;
+    padding: 60px 40px;
+    border-radius: 20px;
+    color: white;
+    text-align: center;
+    margin-bottom: 30px;
+}
+.brand-title {
+    font-size: 3rem;
+    font-weight: 800;
+    color: #FFFFFF !important;
+}
+.brand-subtitle {
+    font-size: 1.2rem;
+    color: #E2E8F0 !important;
+    margin-top: 10px;
+}
+</style>
+""", unsafe_allow_html=True)
     if chosen_menu == "Katalog Inventori Tiket":
-        st.markdown("<span class='brand-title'>Hey There, Going Anywhere?</span>", unsafe_allow_html=True)
-        st.markdown("<p class='brand-subtitle'>Pesan Tiket Dimanapun Kapanpun</p>", unsafe_allow_html=True)
+        st.markdown("""
+        <div class="hero-banner">
+            <h1 class="brand-title">Hey There, Going Anywhere?</h1>
+            <p class="brand-subtitle">Pesan Tiket Dimanapun Kapanpun dengan ArcTick</p>
+        </div>
+        """, unsafe_allow_html=True)
         
         tab_sektor = st.tabs(["Sektor Hub Udara", "Sektor Jalur Darat", "Paket Destinasi Wisata"])
         mapping_sektor = ["Pesawat", "Kereta Api", "Wisata"]
@@ -881,10 +910,12 @@ else:
             new_nama = st.text_input("Nama Jadwal Lengkap")
             new_harga = st.number_input("Besaran Tarif Unit (Rupiah)", min_value=0, step=50000)
             new_stok = st.number_input("Batas Maksimal Kuota Kursi", min_value=0, step=5)
+            new_image = st.text_input("URL Gambar (Link Image)") # Input Baru
             
             if st.button("Simpan Entri Baru"):
                 st.session_state.tickets[sektor_target].append({
-                    "id": new_id, "kategori": new_kat, "nama": new_nama, "harga": new_harga, "stok": new_stok
+                    "id": new_id, "kategori": new_kat, "nama": new_nama, 
+                    "harga": new_harga, "stok": new_stok, "image": new_image, "jadwal": []
                 })
                 st.success("Informasi tiket baru telah berhasil diunggah ke database awan.")
                 
@@ -897,14 +928,15 @@ else:
             edit_nama = st.text_input("Sesuaikan Nama Objek", value=ref_pointer['nama'])
             edit_harga = st.number_input("Sesuaikan Nilai Tarif Jual", min_value=0, value=ref_pointer['harga'])
             edit_stok = st.number_input("Sesuaikan Batas Stok Sisa", min_value=0, value=ref_pointer['stok'])
+            edit_image = st.text_input("Sesuaikan URL Gambar", value=ref_pointer.get('image', '')) # Edit Gambar
             
             if st.button("Terapkan Konfigurasi Baru"):
                 ref_pointer['kategori'] = edit_kat
                 ref_pointer['nama'] = edit_nama
                 ref_pointer['harga'] = edit_harga
                 ref_pointer['stok'] = edit_stok
+                ref_pointer['image'] = edit_image # Simpan perubahan
                 st.success("Sinkronisasi Pembaruan Data Sukses Dilakukan.")
-
         elif action_selector == "Eliminasi Tiket":
             arr_id = [x['id'] for x in st.session_state.tickets[sektor_target]]
             id_chosen = st.selectbox("Pilih ID Tiket yang Akan Dihapus", arr_id)
